@@ -9,13 +9,25 @@ import { AppRoutingModule } from './app.routes';
 import { HomeComponent } from './components/home/home.component';
 import { MaterialModule } from './material.module';
 import { DashboardComponent } from './components/dashboard/dashboard.component';
+import { QualityComponent } from './components/quality/quality.component';
+import { ShippingComponent } from './components/shipping/shipping.component';
+import { ShipmentComponent } from './components/shipment/shipment.component';
+import { InventoryComponent } from './components/inventory/inventory.component';
+import { ProfilesComponent } from './components/profiles/profiles.component';
+import { FolioComponent } from './components/folio/folio.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     LoginComponent,
     HomeComponent,
-    DashboardComponent
+    DashboardComponent,
+    QualityComponent,
+    ShippingComponent,
+    ShipmentComponent,
+    InventoryComponent,
+    ProfilesComponent,
+    FolioComponent
   ],
   imports: [
     BrowserModule,
