@@ -9,6 +9,10 @@ mat-sidenav {
     width: 280px;
     padding:15px;
 }
+mat-icon {
+    opacity: 0.8;
+    transform: scale(1.2);
+}
 .mat-drawer { 
     background-color: white;
     color:black;
@@ -19,7 +23,61 @@ mat-sidenav {
 .toolbar-spacer {
     flex: 1 1 auto;
 }
+.centerTxt {
+    text-align: center;
+  display: inline-block;
+  width: 100%;
+}
 #btnArrow{
     float: right;
 }
+
+.pdgSubmenu {
+    padding: 5px 50px 5px 45px;
+}
+.pdgPanelHeader {
+    padding: 0 18px !important;
+}
+
+.circle {
+    height: 64px;
+    width: 64px;
+    background: #ffffff;
+    color: white;
+    border-radius: 50%;
+    top: 16px;
+    left: 16px;
+    overflow: hidden;
+    text-align: center;
+    border: 2px solid #fff;
+  }
   
+.with-bg {
+    background: url("../../../assets/home/sb-bg-1.jpg") no-repeat center;
+    overflow: initial;
+    position: relative;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    z-index: -1;
+    max-height: 195px;
+}
+
+.title {
+    font-size: 20px;
+    top: 96px;
+    display: flex;
+}
+.fg-white {
+    color: #ffffff !important;
+}
+.subtitle {
+    font-size: 15px;
+    font-weight: 100;
+    top: 116px;
+    display: flex;
+}
+a,span {
+    padding: 5px 50px 5px 50px; 
+}

@@ -1,23 +1,50 @@
-
-<mat-sidenav-container  class="sidenav-container">
-    <mat-sidenav #sidenav [mode]="mode.value">
-        <button mat-icon-button (click)="sidenav.toggle()" id="btnArrow">
-            <mat-icon >arrow_back</mat-icon>
-        </button>
+<mat-sidenav-container class="sidenav-container">
+    <mat-sidenav #sidenav [mode]="mode.value" style="padding: 0em;">
+      <button mat-icon-button (click)="sidenav.toggle()" id="btnArrow">
+        <mat-icon >arrow_back</mat-icon>
+      </button>
+      <div class="with-bg pb-4">      
+        <div class="mb-0 pt-3">
+          <img class="circle ml-3" src="./assets/home/worker.svg" width="80">
+        </div>
+        <div class="pl-3 mt-4">
+            <p class="title fg-white">{{dataUser.name}}</p>
+            <p class="subtitle fg-white">{{dataUser.warehouse}}</p>
+        </div>
+      </div>
+        <div class="mt-3">
+          <mat-nav-list >
+            <div *ngFor="let mod of modules" >
+              <div *ngIf="mod.submodules.length === 0">
+                <a mat-list-item [routerLink]="[mod.path]"><mat-icon>{{mod.icon}}</mat-icon><span>{{mod.title}}</span></a>      
+              </div> 
+              <div *ngIf="mod.submodules.length > 0">
+                <mat-expansion-panel [class.mat-elevation-z0]="true" dense>
+                  <mat-expansion-panel-header class="pdgPanelHeader">
+                    <mat-icon mat-list-icon>{{mod.icon}}</mat-icon>
+                    <span class="pdgSubmenu">{{mod.title}}</span>
+                  </mat-expansion-panel-header>
+                  <mat-nav-list dense>
+                      <a *ngFor="let item of mod.submodules" mat-list-item [routerLink]="[item.path]">{{item.title}}</a>
+                  </mat-nav-list>
+                </mat-expansion-panel>
+              </div> 
+           </div>
+          </mat-nav-list>
+        </div>
     </mat-sidenav>
     <mat-sidenav-content>
-      <mat-toolbar color="primary">
+      <mat-toolbar color="warn">
         <button mat-icon-button (click)="sidenav.toggle()">
           <mat-icon>menu</mat-icon>
         </button>
-        <span class="toolbar-spacer"></span>
+        <span class="centerTxt"></span>
         <button mat-icon-button (click)="logout()">
           <mat-icon>logout</mat-icon>
         </button>
       </mat-toolbar>
-      <!-- <div class="main-content">
-        <p>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.</p>
+      <div class="main-content">
+        <router-outlet></router-outlet>
       </div>
-      <router-outlet></router-outlet> -->
     </mat-sidenav-content>
 </mat-sidenav-container>
