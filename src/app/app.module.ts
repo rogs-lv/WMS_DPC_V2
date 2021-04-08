@@ -16,6 +16,7 @@ import { InventoryComponent } from './components/inventory/inventory.component';
 import { ProfilesComponent } from './components/profiles/profiles.component';
 import { FolioComponent } from './components/folio/folio.component';
 
+import { AgGridModule } from 'ag-grid-angular';
 @NgModule({
   declarations: [
     AppComponent,
@@ -35,7 +36,8 @@ import { FolioComponent } from './components/folio/folio.component';
     AppRoutingModule,
     MaterialModule,
     ReactiveFormsModule,
-    FormsModule
+    FormsModule,
+    AgGridModule.withComponents([])
   ],
   providers: [],
   bootstrap: [AppComponent]

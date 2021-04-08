@@ -7,6 +7,16 @@ import {MatButtonModule} from '@angular/material/button';
 import {MatToolbarModule} from '@angular/material/toolbar';
 import { MatListModule, MatExpansionModule } from '@angular/material';
 import {MatMenuModule} from '@angular/material/menu'; 
+import {MatCardModule} from '@angular/material/card'; 
+import {MatCheckboxModule} from '@angular/material/checkbox'; 
+import {MatRadioModule} from '@angular/material/radio';
+import {MatFormFieldModule} from '@angular/material/form-field'; 
+import {MatSelectModule} from '@angular/material/select';
+/* import {MatTableModule} from '@angular/material/table';  */
+import {MatInputModule} from '@angular/material/input';
+/* import { MatStepperModule} from '@angular/material/stepper'
+import {MatDatepickerModule} from '@angular/material/datepicker';
+import { MatNativeDateModule } from '@angular/material/core'; */
 @NgModule({
     declarations: [],
     imports: [ 
@@ -17,7 +27,13 @@ import {MatMenuModule} from '@angular/material/menu';
         MatButtonModule,
         MatListModule,
         MatExpansionModule,
-        MatMenuModule
+        MatMenuModule,
+        MatCardModule,
+        MatCheckboxModule,
+        MatRadioModule,
+        MatFormFieldModule,
+        MatSelectModule,
+        MatInputModule
     ],
     exports: [
         MatSidenavModule,
@@ -26,7 +42,13 @@ import {MatMenuModule} from '@angular/material/menu';
         MatButtonModule,
         MatListModule,
         MatExpansionModule,
-        MatMenuModule
+        MatMenuModule,
+        MatCardModule,
+        MatCheckboxModule,
+        MatRadioModule,
+        MatFormFieldModule,
+        MatSelectModule,
+        MatInputModule
     ],
     providers: [],
 })

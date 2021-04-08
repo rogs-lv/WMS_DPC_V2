@@ -25,4 +25,3 @@ $WMS-theme: mat-light-theme($WMS-primary, $WMS-accent, $WMS-warn);
 // Alternatively, you can import and @include the theme mixins for each component
 // that you are using.
 @include angular-material-theme($WMS-theme);
-

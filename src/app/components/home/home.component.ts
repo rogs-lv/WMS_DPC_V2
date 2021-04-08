@@ -8,11 +8,18 @@ import { Router } from '@angular/router';
   styleUrls: ['./home.component.css']
 })
 export class HomeComponent implements OnInit {
+  titleModule: string = '';
   dataUser = {
     name: 'Mario Lopez',
     warehouse: 'CEDIS'
   }
-  submodule = [
+  submodule = [];
+  modules = [];
+
+  constructor(
+    private router: Router
+  ) { 
+    this.submodule = [
       {
         path: 'locationMovement ',
         title: 'Mov. Ubicación',
@@ -38,68 +45,72 @@ export class HomeComponent implements OnInit {
         title: 'Transpaso Manual',
         icon: '',
       }
-  ];
-  modules = [
-    {
-      path: 'dasboard',
-      title: 'Inicio',
-      icon: 'dashboard',
-      submodules: []
-    },
-    {
-      path: 'quality',
-      title: 'Calidad',
-      icon: 'verified',
-      submodules: []
-    },
-    {
-      path: '',
-      title: 'Traspasos',
-      icon: 'published_with_changes',
-      submodules: this.submodule
-    },
-    {
-      path: 'shipping',
-      title: 'Remisionado',
-      icon: 'local_shipping',
-      submodules: []
-    },
-    {
-      path: 'shipment',
-      title: 'Embarque',
-      icon: 'directions_boat',
-      submodules: []
-    },
-    {
-      path: 'inventory',
-      title: 'Rec. de Inventario',
-      icon: 'checklist',
-      submodules: []
-    },
-    {
-      path: 'profiles',
-      title: 'Adm. Perfiles',
-      icon: 'group',
-      submodules: []
-    },
-    {
-      path: 'folio',
-      title: 'Folio SAP',
-      icon: 'qr_code_2',
-      submodules: []
-    }
-  ];
-
-  constructor(
-    private router: Router
-  ) { }
+    ];
+    this.modules = [
+      {
+        path: 'dasboard',
+        title: 'Inicio',
+        icon: 'dashboard',
+        submodules: []
+      },
+      {
+        path: 'quality',
+        title: 'Calidad',
+        icon: 'verified',
+        submodules: []
+      },
+      {
+        path: '',
+        title: 'Traspasos',
+        icon: 'published_with_changes',
+        submodules: this.submodule
+      },
+      {
+        path: 'shipping',
+        title: 'Remisionado',
+        icon: 'local_shipping',
+        submodules: []
+      },
+      {
+        path: 'shipment',
+        title: 'Embarque',
+        icon: 'directions_boat',
+        submodules: []
+      },
+      {
+        path: 'inventory',
+        title: 'Rec. de Inventario',
+        icon: 'checklist',
+        submodules: []
+      },
+      {
+        path: 'profiles',
+        title: 'Adm. Perfiles',
+        icon: 'group',
+        submodules: []
+      },
+      {
+        path: 'folio',
+        title: 'Folio SAP',
+        icon: 'qr_code_2',
+        submodules: []
+      }
+    ];
+  }
 
   ngOnInit() {
+    let urlArray = this.router.url.split('/');
+    let lenghtArray = urlArray.length;
+    //console.log(this.modules, urlArray, lenghtArray, urlArray[lenghtArray-1]);
+    this.titleModule = this.modules.find(val => val.path === urlArray[lenghtArray-1]).title;
   }
   mode = new FormControl('over');
 
   logout() {
     //this.auth.doLogout();
     this.router.navigateByUrl('/login');
+  }
+  onChangeTittle(value: string) {
+    this.titleModule = value;
   }
 }
