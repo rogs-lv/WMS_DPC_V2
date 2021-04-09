@@ -1,46 +1,54 @@
-<div class="card-container mt-3">
+<div class="card-container mt-3 animate__animated animate__fadeIn">
     <mat-card class="example-card">
         <mat-card-header>
           <mat-card-title>{{titleCard}}</mat-card-title>
           <span style="flex: 1 1 auto;"></span>
-          <button mat-mini-fab color="warn" *ngIf="processRead" (click)="onCancelProcessRead()">
-            <mat-icon>arrow_back</mat-icon>
-          </button>
+          <button *ngIf="processRead" type="button" class="btn btn-primary" (click)="onCancelProcessRead()">Regresar</button>
         </mat-card-header>
         <mat-card-content>
           <form (ngSubmit)="onSubmit(formQuality)" #formQuality="ngForm" novalidate>
-            <div class="row animate__animated animate__fadeInLeft" *ngIf="!processRead">
-                <div class="col-lg-6">
-                     <ul>
-                         <li class="pb-2"><mat-checkbox (change)="onChangeCheckBox($event)" name="bloqueo" #bloqueo="ngModel" [(ngModel)]="checkBox.bloq" color="primary"><span class="ml-4">Bloquear</span></mat-checkbox></li>
-                         <li class="pb-2"><mat-checkbox (change)="onChangeCheckBox($event)" name="desbloqueo" #desbloqueo="ngModel" [(ngModel)]="checkBox.desbloq" color="primary"><span class="ml-4">Desbloquear</span></mat-checkbox></li>
-                         <li class="pb-2"><mat-checkbox (change)="onChangeCheckBox($event)" name="move" #move="ngModel" [(ngModel)]="checkBox.move" color="primary"><span class="ml-4">Mover Material</span></mat-checkbox></li>
-                     </ul>
+            <div class="row" *ngIf="!processRead">
+              <div class="col-lg-4 col-md-4 col-sm-10 col-12 ml-2">
+                <div class="custom-control custom-checkbox">
+                  <input type="checkbox" class="custom-control-input" id="locked">
+                  <label class="custom-control-label" for="locked">Bloqueo</label>
                 </div>
-                <div class="col-lg-6">
-                  <div class="col-lg-9" style="justify-content: center; display: grid;" *ngIf="checkBox.move">
-                    <mat-form-field appearance="legacy" *ngIf="true">
-                      <mat-label>Almacén</mat-label>
-                      <mat-select>
-                      <mat-option value="option">Option</mat-option>
-                      </mat-select>
-                  </mat-form-field>
-                  </div>
-                  <div class="col-lg-9" style="justify-content: center; display: grid;">
-                    <button mat-raised-button color="primary" (click)="onProcessRead()">Leer Etiqueta</button>
-                  </div>
+                <div class="custom-control custom-checkbox">
+                  <input type="checkbox" class="custom-control-input" id="unlocked">
+                  <label class="custom-control-label" for="unlocked">Desbloqueo</label>
                 </div>
+                <div class="custom-control custom-checkbox">
+                  <input type="checkbox" class="custom-control-input" id="move">
+                  <label class="custom-control-label" for="move">Mover Material</label>
+                </div>
+              </div>
+              <div class="col-lg-3 col-md-3 col-sm-8 col-8 pl-4">
+                <div class="form-group">
+                  <label for="exampleFormControlSelect1">Almacén</label>
+                  <select class="form-control" id="exampleFormControlSelect1">
+                    <option>1</option>
+                    <option>2</option>
+                    <option>3</option>
+                    <option>4</option>
+                    <option>5</option>
+                  </select>
+                </div>
+              </div>
+              <div class="col-lg-4 col-md-4 col-sm-10 col-12 text-center">
+                <button type="button" class="btn btn-primary" (click)="onProcessRead()">Leer Etiqueta</button>
+              </div>
             </div>
-            <div *ngIf="processRead" class="animate__animated animate__fadeInRight">
+            <div *ngIf="processRead" [ngClass]="{'animate__animated animate__fadeInRight': true}">
               <div class="row">
-                <div class="col-lg-3 col-sm-8 col-9" style="justify-content: center;display: grid;">
-                     <mat-form-field class="example-full-width">
-                         <mat-label>Etiqueta</mat-label>
-                         <input matInput value="">
-                     </mat-form-field>          
-                </div>
-                <div class="col-lg-1 col-sm-2 col-2 align-self-center">
-                    <button mat-mini-fab color="primary"><mat-icon>keyboard</mat-icon></button>
+                <div class="col-lg-3 col-md-3 col-sm-6 col-10 mb-3 mt-2">
+                    <div class="input-group">
+                        <input type="text" class="form-control" placeholder="Etiqueta" [value]="" readonly>
+                        <div class="input-group-append">
+                            <button class="btn btn-outline-secondary">
+                                <span><i class="far fa-keyboard"></i></span>
+                            </button>
+                        </div>
+                    </div>
                 </div>
               </div>
               <div class="row">
@@ -55,7 +63,7 @@
               </div>
               <br>
               <div class="row d-flex justify-content-center">
-                  <button mat-stroked-button color="primary"><span style="font-size: 2.5em;"><i class="far fa-paper-plane"></i></span></button>
+                  <button type="button" class="btn btn-outline-primary"><span style="font-size: 1.7em;"><i class="fas fa-plane"></i></span></button>
               </div>
             </div>
           </form>

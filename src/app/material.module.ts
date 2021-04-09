@@ -8,15 +8,12 @@ import {MatToolbarModule} from '@angular/material/toolbar';
 import { MatListModule, MatExpansionModule } from '@angular/material';
 import {MatMenuModule} from '@angular/material/menu'; 
 import {MatCardModule} from '@angular/material/card'; 
-import {MatCheckboxModule} from '@angular/material/checkbox'; 
+/* import {MatCheckboxModule} from '@angular/material/checkbox'; 
 import {MatRadioModule} from '@angular/material/radio';
 import {MatFormFieldModule} from '@angular/material/form-field'; 
 import {MatSelectModule} from '@angular/material/select';
-/* import {MatTableModule} from '@angular/material/table';  */
-import {MatInputModule} from '@angular/material/input';
-/* import { MatStepperModule} from '@angular/material/stepper'
-import {MatDatepickerModule} from '@angular/material/datepicker';
-import { MatNativeDateModule } from '@angular/material/core'; */
+import {MatInputModule} from '@angular/material/input'; */
+
 @NgModule({
     declarations: [],
     imports: [ 
@@ -29,11 +26,11 @@ import { MatNativeDateModule } from '@angular/material/core'; */
         MatExpansionModule,
         MatMenuModule,
         MatCardModule,
-        MatCheckboxModule,
+       /*  MatCheckboxModule,
         MatRadioModule,
         MatFormFieldModule,
         MatSelectModule,
-        MatInputModule
+        MatInputModule */
     ],
     exports: [
         MatSidenavModule,
@@ -41,14 +38,14 @@ import { MatNativeDateModule } from '@angular/material/core'; */
         MatIconModule,
         MatButtonModule,
         MatListModule,
-        MatExpansionModule,
+        MatExpansionModule, 
         MatMenuModule,
         MatCardModule,
-        MatCheckboxModule,
+       /*  MatCheckboxModule,
         MatRadioModule,
         MatFormFieldModule,
         MatSelectModule,
-        MatInputModule
+        MatInputModule */
     ],
     providers: [],
 })

@@ -48,7 +48,7 @@ export class HomeComponent implements OnInit {
     ];
     this.modules = [
       {
-        path: 'dasboard',
+        path: 'dashboard',
         title: 'Inicio',
         icon: 'dashboard',
         submodules: []

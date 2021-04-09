@@ -30,3 +30,8 @@ table {
     overflow-y:scroll;
     overflow-x:hidden;
   }
+
+.justify-center-grid {
+    display: grid;
+    justify-content: center;
+}

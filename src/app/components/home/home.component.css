@@ -33,7 +33,7 @@ mat-icon {
 }
 
 .pdgSubmenu {
-    padding: 5px 50px 5px 45px;
+    padding: 0px 20px 5px 20px;
 }
 .pdgPanelHeader {
     padding: 0 18px !important;
@@ -79,7 +79,8 @@ mat-icon {
     display: flex;
 }
 a,span {
-    padding: 5px 50px 5px 50px; 
+    padding: 5px 20px 5px 20px; 
+    font-size: 20px;
 }
 
 
@@ -174,7 +175,7 @@ a,span {
     background-color: #fafafa;
     height: 40px;
     width: 200px;
-    margin: 0 8px 16px;
+    margin: 0 8px 0px;
     padding: 16px;
     display: flex;
     flex-direction: row;
@@ -189,7 +190,7 @@ a,span {
   }
   
   .card.card-small {
-    height: 16px;
+    /* height: 16px; */
     width: 168px;
   }
   
@@ -221,10 +222,10 @@ a,span {
   }
   
   svg#rocket {
-    width: 80px;
+    width: 70px;
     position: absolute;
     left: -10px;
-    top: -24px;
+    top: -28px;
   }
   
   svg#rocket-smoke {

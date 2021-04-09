@@ -1,1 +1,60 @@
-<p style="text-align: center;">shipment works!</p>
+<div class="card-container mt-3 animate__animated animate__fadeIn">
+    <mat-card class="example-card">
+        <mat-card-header>
+          <mat-card-title>{{titleCard}}</mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          <form (ngSubmit)="onSubmit(formQuality)" #formQuality="ngForm" novalidate>
+            <div class="form-group row">
+                <label for="ShipmentNum" class="col-lg-2 col-sm-2 col-sm-4 col-4 col-form-label">Embarque</label>
+                <div class="input-group col-lg-3 col-md-3 col-sm-8 col-8">
+                    <input type="text" class="form-control" placeholder="N° Embarque" [value]="" readonly>
+                    <div class="input-group-append">
+                        <button class="btn btn-outline-secondary">
+                            <span><i class="fas fa-plus"></i></span>
+                        </button>
+                    </div>
+                </div>
+            </div>            
+            <div class="form-group row">
+                <label for="Client" class="col-lg-2 col-sm-2 col-sm-4 col-4 col-form-label">Cliente</label>
+                <div class="col-lg-3 col-md-3 col-sm-8 col-8">
+                    <select class="form-control" id="exampleFormControlSelect1">
+                        <option>1</option>
+                        <option>2</option>
+                        <option>3</option>
+                        <option>4</option>
+                        <option>5</option>
+                    </select>                
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-3 col-md-3 col-sm-6 col-10 mb-3 mt-2">
+                    <div class="input-group">
+                        <input type="text" class="form-control" placeholder="Etiqueta" [value]="" readonly>
+                        <div class="input-group-append">
+                            <button class="btn btn-outline-secondary">
+                                <span><i class="far fa-keyboard"></i></span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-12">
+                <ag-grid-angular
+                    style="width: 100%; height: 500px;"
+                    class="ag-theme-alpine"
+                    [rowData]="rowData"
+                    [columnDefs]="columnDefs">
+                </ag-grid-angular>
+                </div>
+            </div>
+            <br>
+            <div class="row d-flex justify-content-center">
+                <button type="button" class="btn btn-outline-primary"><span style="font-size: 1.7em;"><i class="fas fa-plane"></i></span></button>
+            </div>
+          </form>
+        </mat-card-content>
+    </mat-card>
+</div>
