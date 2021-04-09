@@ -17,6 +17,11 @@ import { ProfilesComponent } from './components/profiles/profiles.component';
 import { FolioComponent } from './components/folio/folio.component';
 
 import { AgGridModule } from 'ag-grid-angular';
+import { ManualComponent } from './components/transfer/manual/manual.component';
+import { MoveComponent } from './components/transfer/move/move.component';
+import { ProduccionComponent } from './components/transfer/produccion/produccion.component';
+import { ReceiptComponent } from './components/transfer/receipt/receipt.component';
+import { RequestComponent } from './components/transfer/request/request.component';
 @NgModule({
   declarations: [
     AppComponent,
@@ -28,7 +33,12 @@ import { AgGridModule } from 'ag-grid-angular';
     ShipmentComponent,
     InventoryComponent,
     ProfilesComponent,
-    FolioComponent
+    FolioComponent,
+    ManualComponent,
+    MoveComponent,
+    ProduccionComponent,
+    ReceiptComponent,
+    RequestComponent
   ],
   imports: [
     BrowserModule,

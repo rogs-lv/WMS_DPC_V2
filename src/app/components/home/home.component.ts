@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { Router } from '@angular/router';
+import { module, sub_module } from 'src/app/models/menu';
 
 @Component({
   selector: 'app-home',
@@ -9,43 +10,32 @@ import { Router } from '@angular/router';
 })
 export class HomeComponent implements OnInit {
   titleModule: string = '';
+  modules: module[];
   dataUser = {
     name: 'Mario Lopez',
     warehouse: 'CEDIS'
   }
-  submodule = [];
-  modules = [];
 
   constructor(
     private router: Router
   ) { 
-    this.submodule = [
-      {
-        path: 'locationMovement ',
-        title: 'Mov. Ubicación',
-        icon: '',
-      },
-      {
-        path: 'transferRequest ',
-        title: 'Solicitud Traspaso',
-        icon: '',
-      },
-      {
-        path: 'sendProduction',
-        title: 'Env. a Producción',
-        icon: '',
-      },
-      {
-        path: 'transferReceipt  ',
-        title: 'Recibo de Traspaso',
-        icon: '',
-      },
-      {
-        path: 'manualTransfer   ',
-        title: 'Transpaso Manual',
-        icon: '',
-      }
-    ];
+  }
+
+  ngOnInit() {
+    this.getConfigMenu();
+    this.getTitleModule();
+  }
+  mode = new FormControl('over');
+
+  logout() {
+    //this.auth.doLogout();
+    this.router.navigateByUrl('/login');
+  }
+  onChangeTittle(value: string) {
+    this.titleModule = value;
+  }
+  getConfigMenu() {
+    
     this.modules = [
       {
         path: 'dashboard',
@@ -63,7 +53,33 @@ export class HomeComponent implements OnInit {
         path: '',
         title: 'Traspasos',
         icon: 'published_with_changes',
-        submodules: this.submodule
+        submodules: [
+          {
+            path: 'move',
+            title: 'Mov. Ubicación',
+            icon: '',
+          },
+          {
+            path: 'request',
+            title: 'Solicitud Traspaso',
+            icon: '',
+          },
+          {
+            path: 'production',
+            title: 'Env. a Producción',
+            icon: '',
+          },
+          {
+            path: 'receipt',
+            title: 'Recibo de Traspaso',
+            icon: '',
+          },
+          {
+            path: 'manual',
+            title: 'Transpaso Manual',
+            icon: '',
+          }
+        ]
       },
       {
         path: 'shipping',
@@ -95,22 +111,17 @@ export class HomeComponent implements OnInit {
         icon: 'qr_code_2',
         submodules: []
       }
-    ];
+    ];;
   }
-
-  ngOnInit() {
+  getTitleModule() {
     let urlArray = this.router.url.split('/');
     let lenghtArray = urlArray.length;
-    //console.log(this.modules, urlArray, lenghtArray, urlArray[lenghtArray-1]);
-    this.titleModule = this.modules.find(val => val.path === urlArray[lenghtArray-1]).title;
-  }
-  mode = new FormControl('over');
-
-  logout() {
-    //this.auth.doLogout();
-    this.router.navigateByUrl('/login');
-  }
-  onChangeTittle(value: string) {
-    this.titleModule = value;
+    let path = this.modules.find(val => val.path === urlArray[lenghtArray-1]);
+    if(path === undefined) {
+      let { submodules } = this.modules.find(sub => sub.submodules.length > 0);
+      this.titleModule = submodules.find(val => val.path === urlArray[lenghtArray-1]).title;
+    } else {
+      this.titleModule = this.modules.find(val => val.path === urlArray[lenghtArray-1]).title;
+    }
   }
 }
