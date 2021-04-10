@@ -22,6 +22,9 @@ import { MoveComponent } from './components/transfer/move/move.component';
 import { ProduccionComponent } from './components/transfer/produccion/produccion.component';
 import { ReceiptComponent } from './components/transfer/receipt/receipt.component';
 import { RequestComponent } from './components/transfer/request/request.component';
+import { ListprofileComponent } from './components/profiles/listprofile/listprofile.component';
+import { UserprofileComponent } from './components/profiles/userprofile/userprofile.component';
+
 @NgModule({
   declarations: [
     AppComponent,
@@ -38,7 +41,9 @@ import { RequestComponent } from './components/transfer/request/request.componen
     MoveComponent,
     ProduccionComponent,
     ReceiptComponent,
-    RequestComponent
+    RequestComponent,
+    ListprofileComponent,
+    UserprofileComponent
   ],
   imports: [
     BrowserModule,

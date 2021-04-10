@@ -115,13 +115,14 @@ export class HomeComponent implements OnInit {
   }
   getTitleModule() {
     let urlArray = this.router.url.split('/');
-    let lenghtArray = urlArray.length;
-    let path = this.modules.find(val => val.path === urlArray[lenghtArray-1]);
+    //let lenghtArray = urlArray.length;
+    let index = 2;
+    let path = this.modules.find(val => val.path === urlArray[index]);
     if(path === undefined) {
       let { submodules } = this.modules.find(sub => sub.submodules.length > 0);
-      this.titleModule = submodules.find(val => val.path === urlArray[lenghtArray-1]).title;
+      this.titleModule = submodules.find(val => val.path === urlArray[index]).title;
     } else {
-      this.titleModule = this.modules.find(val => val.path === urlArray[lenghtArray-1]).title;
+      this.titleModule = this.modules.find(val => val.path === urlArray[index]).title;
     }
   }
 }

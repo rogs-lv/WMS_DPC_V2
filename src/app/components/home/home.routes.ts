@@ -1,4 +1,4 @@
-import { Routes } from '@angular/router';
+import { RouterModule, Routes } from '@angular/router';
 import { DashboardComponent } from '../dashboard/dashboard.component';
 import { QualityComponent } from '../quality/quality.component';
 import { ShippingComponent } from '../shipping/shipping.component';
@@ -11,6 +11,8 @@ import { MoveComponent } from '../transfer/move/move.component';
 import { ProduccionComponent } from '../transfer/produccion/produccion.component';
 import { ReceiptComponent } from '../transfer/receipt/receipt.component';
 import { RequestComponent } from '../transfer/request/request.component';
+import { PROFILE_ROUTES } from '../profiles/profiles.routes';
+import { NgModule } from '@angular/core';
 
 export const HOME_ROUTES: Routes = [
     { path: 'dashboard', component:  DashboardComponent},
@@ -18,7 +20,7 @@ export const HOME_ROUTES: Routes = [
     { path: 'shipping', component:  ShippingComponent},
     { path: 'shipment', component:  ShipmentComponent},
     { path: 'inventory', component:  InventoryComponent},
-    { path: 'profiles', component:  ProfilesComponent},
+    { path: 'profiles', component:  ProfilesComponent, children: PROFILE_ROUTES },
     { path: 'folio', component:  FolioComponent},
     { path: 'manual', component:  ManualComponent},
     { path: 'move', component:  MoveComponent},
