@@ -110,6 +110,21 @@ export class UserprofileComponent implements OnInit {
   }
   onUpdateUser(){
     //console.log('update',this.additionalSett, this.modules, this.profileUser.Status);
+    this.loading = true;
+    this.profileService.updateProfile(this.buildDataUser()).subscribe(response => {
+      if(response.Code == 0) {
+        this.loading = false;
+        this.childSnak.openSnackBar(response.Data, 'Cerrar', 'success-snackbar')
+        this.onResetCreate();
+        this.action = 'I';
+      } else {
+        this.loading = false;
+        this.childSnak.openSnackBar(response.Message, 'Cerrar', 'error-snackbar')
+      }
+    }, (err) => {
+      this.childSnak.openSnackBar(err.message, 'Cerrar', 'error-snackbar')
+      this.loading = false;
+    });
   }
 
   onClickAllTransfer(){

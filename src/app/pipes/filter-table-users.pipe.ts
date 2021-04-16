@@ -9,7 +9,7 @@ export class FilterTableUsersPipe implements PipeTransform {
   transform(profiles: profile[], search: string): any {
     if (profiles.length == 0 || !search )
       return profiles;
-    return profiles.filter(f => f.IdUser === search || f.NameUser === search || f.WhsCode === search);
+    return profiles.filter(f => f.IdUser.toLowerCase().includes(search.toLowerCase()) || f.NameUser.toLowerCase().includes(search.toLowerCase()) || f.WhsCode.toLowerCase().includes(search.toLowerCase()));
   }
 
 }
