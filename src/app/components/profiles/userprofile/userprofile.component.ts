@@ -3,11 +3,12 @@ import { AuthService } from 'src/app/service/authentication/auth.service';
 import { ConfigurationService } from 'src/app/service/configuration/configuration.service';
 import { SnakbarComponent } from '../../shared/snakbar/snakbar.component';
 import { module, submodule } from 'src/app/models/module';
-import { additionalSettings, profile } from '../../../models/profile';
+import { additionalSettings, profile, profileUser } from '../../../models/profile';
 import { ProfileService } from 'src/app/service/profile/profile.service';
 import { Router } from '@angular/router';
 import { ComunicationService } from 'src/app/service/shared/comunication.service';
 import { NgForm } from '@angular/forms';
+import { warehouse } from 'src/app/models/warehouse';
 @Component({
   selector: 'app-userprofile',
   templateUrl: './userprofile.component.html',
@@ -19,8 +20,11 @@ export class UserprofileComponent implements OnInit {
   modules: module[];
   sub_module: submodule[];
   additionalSett: additionalSettings[];
-  action: string = 'I'; //Insert - Nuevo
+  warehouses: warehouse[];
+  action: string = 'I'; //Insert - New
   loading: boolean = false;
+  checkTransfer: boolean = true;
+  checkPrincial: boolean = true;
   
   constructor(
     private auth: AuthService,
@@ -31,6 +35,7 @@ export class UserprofileComponent implements OnInit {
     this.modules = [];
     this.additionalSett = [];
     this.profileUser = new profile();
+    this.warehouses = [];
   }
 
   ngOnInit() {
@@ -43,11 +48,12 @@ export class UserprofileComponent implements OnInit {
         this.getAdditionalSettings(profile.IdUser);
       } else {
         this.action = 'I'; // Insert new user
-        this.profileUser.Status = 'A';
+        this.profileUser.Status = true;
         this.getModulesProfile('N');
         this.getAdditionalSettings('N');
       }
     });
+    this.getWarehouse();
   }
   onClickProfile(formProfile: NgForm) {
 
@@ -70,9 +76,63 @@ export class UserprofileComponent implements OnInit {
       this.childSnak.openSnackBar(err.message, 'Cerrar','error-snackbar');
     });
   }
-
-  onCreateUser() {
-
+  getWarehouse(){
+    this.profileService.getWarehouse().subscribe(response => {
+      if(response.Code == 0){
+        this.warehouses = response.Data;
+      }
+    }, (err) => {
+      this.childSnak.openSnackBar(err.message, 'Cerrar', 'error-snackbar')
+    })
   }
-  onUpdateUser(){}
+  buildDataUser(): profileUser { 
+    const data: profileUser = new profileUser();
+    data.UserProfile = this.profileUser;
+    data.UserAdditionalSettings = this.additionalSett;
+    data.UserModules = this.modules;
+    return data;
+  }
+  onCreateUser() {
+    this.loading = true;
+    this.profileService.createProfile(this.buildDataUser()).subscribe(response => {
+      if(response.Code == 0) {
+        this.loading = false;
+        this.childSnak.openSnackBar(response.Data, 'Cerrar', 'success-snackbar')
+        this.onResetCreate();
+      } else {
+        this.loading = false;
+        this.childSnak.openSnackBar(response.Message, 'Cerrar', 'error-snackbar')
+      }      
+    }, (err) => {
+      this.childSnak.openSnackBar(err.message, 'Cerrar', 'error-snackbar')
+      this.loading = false;
+    })
+  }
+  onUpdateUser(){
+    //console.log('update',this.additionalSett, this.modules, this.profileUser.Status);
+  }
+
+  onClickAllTransfer(){
+    const filterModuleTran = this.modules.filter(val => val.Principal === 'TRAN');
+    if(this.checkTransfer)
+      filterModuleTran.map(x=> x.Status = true);
+    else 
+      filterModuleTran.map(x=> x.Status = false);
+  }
+  onClickAllPrincipal(){
+    const filterModulePrincipal = this.modules.filter(val => val.Principal === '' && val.IdModule !== 'TRAN');
+    if(this.checkPrincial)
+      filterModulePrincipal.map(x=> x.Status = true);
+    else 
+      filterModulePrincipal.map(x=> x.Status = false);
+  }
+  onResetCreate() {
+    this.profileUser = new profile();
+    this.profileUser.Status = true;
+    const filterModuleTran = this.modules.filter(val => val.Principal === 'TRAN');
+    const filterModulePrincipal = this.modules.filter(val => val.Principal === '' && val.IdModule !== 'TRAN');
+    filterModuleTran.map(x=> x.Status = true);
+    filterModulePrincipal.map(x=> x.Status = true);
+    this.additionalSett.map(y => y.Status = true);
+  }
 }

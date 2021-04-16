@@ -12,3 +12,7 @@
     background-clip: border-box;
     border-radius: .25rem;
 }
+
+.spanColor {
+    color: red;
+}

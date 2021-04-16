@@ -3,9 +3,9 @@ import { Injectable } from '@angular/core';
 import { Observable, throwError } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { AuthService } from '../authentication/auth.service';
-import { auth } from '../../interfaces/authenticate.interface';
 import { map } from 'rxjs/operators';
 import { response } from 'src/app/interfaces/response.interface';
+import { additionalSettings, profile, profileUser } from 'src/app/models/profile';
 
 
 @Injectable({
@@ -50,4 +50,46 @@ export class ProfileService {
             })
         );
     }
+
+    getWarehouse() {
+        const header = new HttpHeaders()
+            .set('Authorization', this.auth.getToken());    
+        const api = `${this.endpoint}profile/GetWarehouses`;
+        return this.http.get(api, {headers: header}).pipe(
+            map( (response: response) => {
+                return response;
+            })
+        );
+    }
+    createProfile(userProfile: profileUser) {
+        const header = new HttpHeaders()
+        .set('Content-Type', 'application/json')
+        .set('Authorization', this.auth.getToken());
+        const api = `${this.endpoint}profile/CreateProfile`;
+        return this.http.post(
+          api,
+          userProfile,
+          { headers: header }
+        ).pipe(
+          map((response: response) => {
+            return response;
+          })
+        );
+    }
+    updateProfile(userProfile: profileUser) {
+        const header = new HttpHeaders()
+        .set('Content-Type', 'application/json')
+        .set('Authorization', this.auth.getToken());
+        const api = `${this.endpoint}profile/UpdateProfile`;
+    
+        return this.http.patch(
+          api,
+          userProfile,
+          {headers: header}
+        ).pipe(
+          map( (response: response) => {
+            return response;
+          })
+        );
+      }
 }  

@@ -3,7 +3,7 @@ export class module {
     Path: string;
     Title: string;
     Icon: string;
-    Status: string;
+    Status: boolean;
     Principal: string;
     Submodules: submodule[];
 }

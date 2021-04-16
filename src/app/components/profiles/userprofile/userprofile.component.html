@@ -4,25 +4,25 @@
             <button class="btn btn-primary" [routerLink]="['/home/profiles/list']" ><span><i class="fa fa-arrow-circle-left"></i> Regresar</span></button>
         </div>
     </div>
-    <form (ngSubmit)="onClickProfile(formProfile)" #formProfile="ngForm" class="login100-form validate-form">
+    <form #formProfile="ngForm" class="login100-form validate-form">
         <div class="row">
             <div class="col-lg-3 col-md-3 col-sm-12 col-12">
                 <div class="form-group">
-                    <label for="IdUser" placeholder="Id Usuario">ID Usuario</label>
+                    <label for="IdUser" placeholder="Id Usuario">ID Usuario <span class="spanColor" *ngIf="action === 'I' || action === 'U'">*</span></label>
                     <input type="text" class="form-control" id="IdUser" required #IdUser="ngModel" name="IdUser" [(ngModel)]="profileUser.IdUser" [disabled]="action !== 'I'">
                     <span class="text-danger" *ngIf="(formProfile.submitted  || formProfile.controls['idUser']?.touched ) && formProfile.controls['idUser'].errors"><i class="fas fa-user-circle"></i> El ID es obligatorio</span>
                 </div>
             </div>
             <div class="col-lg-5 col-md-5 col-sm-12 col-12">
                 <div class="form-group">
-                    <label for="NameUser">Nombre</label>
+                    <label for="NameUser">Nombre<span class="spanColor" *ngIf="action === 'I' || action === 'U'">*</span></label>
                     <input type="text" class="form-control" id="NameUser" required #NameUser="ngModel" name="NameUser" [(ngModel)]="profileUser.NameUser">
                     <span class="text-danger" *ngIf="(formProfile.submitted  || formProfile.controls['nameUser']?.touched ) && formProfile.controls['nameUser'].errors"><i class="fas fa-user-circle"></i> El nombre es obligatorio</span>
                 </div>
             </div>
             <div class="col-lg-3 col-md-3 col-sm-12 col-12 d-flex align-items-center">
                 <div class="custom-control custom-checkbox">
-                    <input type="checkbox" class="custom-control-input" id="status" [checked]="profileUser.Status == 'A' ? true : false">
+                    <input type="checkbox" class="custom-control-input" id="status" #Status="ngModel" name="Status" [(ngModel)]="profileUser.Status">
                     <label class="custom-control-label" for="status">Estatus</label>
                 </div>
             </div>
@@ -30,39 +30,44 @@
         <div class="row">
             <div class="col-lg-3 col-md-3 col-sm-12 col-12">
                 <div class="form-group">
-                    <label for="warehouse">Almacén</label>
+                    <label for="warehouse">Almacén<span class="spanColor" *ngIf="action === 'I' || action === 'U'">*</span></label>
                     <select class="form-control" id="warehouse" required #Warehouse="ngModel" name="Warehouse" [(ngModel)]="profileUser.WhsCode">
-                        <option>CEDIS</option>
+                        <option *ngFor="let whs of warehouses" [ngValue]="whs.WhsCode">{{whs.WhsName}}</option>
                     </select>
                     <span class="text-danger" *ngIf="(formProfile.submitted  || formProfile.controls['warehouse']?.touched ) && formProfile.controls['warehouse'].errors"><i class="fas fa-user-circle"></i> El almacén es obligatorio</span>
                 </div>
             </div>
             <div class="col-lg-5 col-md-5 col-sm-12 col-12">
                 <div class="form-group">
-                    <label for="Recuento">Password</label>
+                    <label for="Recuento">Password<span class="spanColor" *ngIf="action === 'I'">*</span></label>
                     <input type="password" placeholder="**********" class="form-control" id="password" #Password="ngModel" name="Password" [(ngModel)]="profileUser.Password">
                 </div>
             </div>
         </div>
-        <br>
-        <div class="row">
-            <div class="col-lg-6 col-md-6 col-sm-12 col-12 pb-2">
-                <div class="card">
-                    <h5 class="card-header">Menu Principal</h5>
-                    <div class="card-body">
-                        <div class="row">
-                            <div *ngFor="let module of modules | filterModule: 'TRAN'; let i = index">
-                                <div *ngIf="module.Path">
-                                    <div class="card2 col-lg-12 col-md-12 col-sm-12 col-12">                                    
-                                        <div class="custom-control custom-checkbox image-checkbox">
-                                            <input type="checkbox" class="custom-control-input" [id]="module.Path" [checked]="module.Status === 'A' ? true : false">
-                                            <label class="custom-control-label" [for]="module.Path">
-                                                <img src="../../../../assets/profile/{{module.Icon}}.svg" width="60px;" height="60px;" alt="#" class="img-fluid opacity_icon">
-                                            </label>
-                                        </div>
-                                        <div class="card-body">
-                                            <span>{{module.Title}}</span>
-                                        </div>
+    </form>
+    <br>
+    <div class="row">
+        <div class="col-lg-6 col-md-6 col-sm-12 col-12 pb-2">
+            <div class="card">
+                <h5 class="card-header">
+                    <div class="custom-control custom-checkbox image-checkbox">
+                        <input type="checkbox" class="custom-control-input" id="AllPrincipal" (change)="onClickAllPrincipal()" [(ngModel)]="checkPrincial">
+                        <label class="custom-control-label" for="AllPrincipal">Menu Principal</label>
+                    </div>
+                </h5>
+                <div class="card-body">
+                    <div class="row">
+                        <div *ngFor="let module of modules | filterModule: 'TRAN'; let i = index">
+                            <div *ngIf="module.Path">
+                                <div class="card2 col-lg-12 col-md-12 col-sm-12 col-12">                                    
+                                    <div class="custom-control custom-checkbox image-checkbox">
+                                        <input type="checkbox" class="custom-control-input" [id]="module.Path" [(ngModel)]="module.Status">
+                                        <label class="custom-control-label" [for]="module.Path">
+                                            <img src="../../../../assets/profile/{{module.Icon}}.svg" width="60px;" height="60px;" alt="#" class="img-fluid opacity_icon">
+                                        </label>
+                                    </div>
+                                    <div class="card-body">
+                                        <span>{{module.Title}}</span>
                                     </div>
                                 </div>
                             </div>
@@ -70,54 +75,51 @@
                     </div>
                 </div>
             </div>
-            <div class="col-lg-6 col-md-6 col-sm-12 col-12">
-                <div class="card">
-                    <h5 class="card-header">Menu Traspaso</h5>
-                    <div class="card-body">
-                        <ul class="list-group list-group-flush">
-                            <li class="list-group-item" *ngFor="let sub of modules | filterSubmodule: 'TRAN'; let j = index;">
-                                <div class="custom-control custom-checkbox">
-                                    <input type="checkbox" class="custom-control-input" [id]="sub.Path" [checked]="sub.Status === 'A' ? true : false">
-                                    <label class="custom-control-label" for="movimientoUbicacion">{{sub.Title}}</label>
-                                </div>
-                            </li>
-                        </ul>
+        </div>
+        <div class="col-lg-6 col-md-6 col-sm-12 col-12">
+            <div class="card">
+                <h5 class="card-header">
+                    <div class="custom-control custom-checkbox image-checkbox">
+                        <input type="checkbox" class="custom-control-input" id="AllTransfer" (change)="onClickAllTransfer()" [(ngModel)]="checkTransfer">
+                        <label class="custom-control-label" for="AllTransfer">Menu Traspaso</label>
                     </div>
+                </h5>
+                <div class="card-body">
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item" *ngFor="let sub of modules | filterSubmodule: 'TRAN'; let j = index;">
+                            <div class="custom-control custom-checkbox">
+                                <input type="checkbox" class="custom-control-input" [id]="sub.Path" [(ngModel)]="sub.Status">
+                                <label class="custom-control-label" [for]="sub.Path">{{sub.Title}}</label>
+                            </div>
+                        </li>
+                    </ul>
                 </div>
             </div>
         </div>
-        <br>
-        <div class="row">
-            <div class="col-lg-12 col-md-12 col-sm-12 col-12">
-                <div class="card">
-                    <div class="card-body">
-                        <h5 class="card-title">Otras Configuraciones</h5>
-                        <div class="row">
-                            <div class="col-lg-12 col-md-12 col-sm-12 col-12">
-                                <div class="custom-control custom-checkbox" *ngFor="let conf of additionalSett">
-                                    <input type="checkbox" class="custom-control-input" [id]="conf.IdConfig" [name]="conf.IdConfig" [checked]="conf.Status== 'A' ? true : false">
-                                    <label class="custom-control-label" for="Ciego">{{conf.NameConfig}}</label>
-                                </div>
-                                <!-- <div class="custom-control custom-checkbox">
-                                    <input type="checkbox" class="custom-control-input" id="Ciego">
-                                    <label class="custom-control-label" for="Ciego">Permitir Recuento Ciego</label>
-                                </div>
-                                <div class="custom-control custom-checkbox">
-                                    <input type="checkbox" class="custom-control-input" id="Folio">
-                                    <label class="custom-control-label" for="Folio">Permitir Lectura de Folios</label>
-                                </div> -->
+    </div>
+    <br>
+    <div class="row">
+        <div class="col-lg-12 col-md-12 col-sm-12 col-12">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Otras Configuraciones</h5>
+                    <div class="row">
+                        <div class="col-lg-12 col-md-12 col-sm-12 col-12">
+                            <div class="custom-control custom-checkbox" *ngFor="let conf of additionalSett">
+                                <input type="checkbox" class="custom-control-input" [id]="conf.IdConfig" [(ngModel)]="conf.Status">
+                                <label class="custom-control-label" [for]="conf.IdConfig">{{conf.NameConfig}}</label>
                             </div>
                         </div>
                     </div>
-                  </div>
-            </div>
+                </div>
+              </div>
         </div>
-        <br>
-        <div class="row d-flex justify-content-center">
-            <button class="btn btn-primary" [disabled]="!profileUser.IdUser || !profileUser.NameUser || !profileUser.WhsCode || !profileUser.Password" *ngIf="!loading && action === 'I'" (click)="onCreateUser()"><span><i class="fa fa-user-plus"></i> Crear</span></button>
-            <button class="btn btn-primary" [disabled]="!profileUser.IdUser || !profileUser.NameUser || !profileUser.WhsCode" *ngIf="loading && action === 'U'" (click)="onUpdateUser()"><span><i class="fa fa-user-edit"></i> Actualizar</span></button>
-            <button class="btn btn-primary" *ngIf="loading"><span><i class="fas fa-spinner fa-pulse"></i></span></button>
-        </div>
-    </form>    
+    </div>
+    <br>
+    <div class="row d-flex justify-content-center">
+        <button class="btn btn-primary" [disabled]="!profileUser.IdUser || !profileUser.NameUser || !profileUser.WhsCode || !profileUser.Password" *ngIf="!loading && action === 'I'" (click)="onCreateUser()"><span><i class="fa fa-user-plus"></i> Crear</span></button>
+        <button class="btn btn-primary" [disabled]="!profileUser.IdUser || !profileUser.NameUser || !profileUser.WhsCode" *ngIf="!loading && action === 'U'" (click)="onUpdateUser()"><span><i class="fa fa-user-edit"></i> Actualizar</span></button>
+        <button class="btn btn-primary" *ngIf="loading"><span><i class="fas fa-spinner fa-pulse"></i></span></button>
+    </div>
 </div>
 <app-snakbar></app-snakbar>

@@ -39,8 +39,8 @@
                                     <a>{{p.WhsCode}}</a>
                                 </td>
                                 <td class="text-center">
-                                    <span class="badge badge-success" *ngIf="p.Status == 'A'">Activo</span>
-                                    <span class="badge badge-error" *ngIf="p.Status != 'A'">Inactivo</span>
+                                    <span class="badge badge-success" *ngIf="p.Status">Activo</span>
+                                    <span class="badge badge-danger" *ngIf="!p.Status">Inactivo</span>
                                 </td>
                                 <td style="width: 20%;">
                                     <div class="d-flex justify-content-around">
