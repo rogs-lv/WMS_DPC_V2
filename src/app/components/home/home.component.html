@@ -8,24 +8,24 @@
           <img class="circle ml-3" src="./assets/home/worker.svg" width="80">
         </div>
         <div class="pl-3 mt-4">
-            <p class="title fg-white">{{dataUser.name}}</p>
-            <p class="subtitle fg-white">{{dataUser.warehouse}}</p>
+            <p class="title fg-white">{{dataUser.idUser}}</p>
+            <p class="subtitle fg-white">{{dataUser.whsCode}}</p>
         </div>
       </div>
         <div class="mt-3">
           <mat-nav-list >
             <div *ngFor="let mod of modules" >
-              <div *ngIf="mod.submodules.length === 0">
-                <a mat-list-item (click)="onChangeTittle(mod.title)" [routerLink]="[mod.path]"><mat-icon>{{mod.icon}}</mat-icon><span>{{mod.title}}</span></a>      
+              <div *ngIf="mod.Submodules.length === 0">
+                <a mat-list-item (click)="onChangeTittle(mod.Title)" [routerLink]="[mod.Path]"><mat-icon>{{mod.Icon}}</mat-icon><span>{{mod.Title}}</span></a>      
               </div> 
-              <div *ngIf="mod.submodules.length > 0">
+              <div *ngIf="mod.Submodules.length > 0">
                 <mat-expansion-panel [class.mat-elevation-z0]="true" dense>
                   <mat-expansion-panel-header class="pdgPanelHeader">
-                    <mat-icon mat-list-icon>{{mod.icon}}</mat-icon>
-                    <span class="pdgSubmenu">{{mod.title}}</span>
+                    <mat-icon mat-list-icon>{{mod.Icon}}</mat-icon>
+                    <span class="pdgSubmenu">{{mod.Title}}</span>
                   </mat-expansion-panel-header>
                   <mat-nav-list dense>
-                      <a *ngFor="let item of mod.submodules" (click)="onChangeTittle(item.title)" mat-list-item [routerLink]="[item.path]">{{item.title}}</a>
+                      <a *ngFor="let item of mod.Submodules" (click)="onChangeTittle(item.Title)" mat-list-item [routerLink]="[item.Path]">{{item.Title}}</a>
                   </mat-nav-list>
                 </mat-expansion-panel>
               </div> 
@@ -71,3 +71,4 @@
       </div>
     </mat-sidenav-content>
 </mat-sidenav-container>
+<app-snakbar></app-snakbar>

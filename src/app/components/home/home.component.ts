@@ -1,7 +1,11 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { Router } from '@angular/router';
-import { module, sub_module } from 'src/app/models/menu';
+import { AuthService } from 'src/app/service/authentication/auth.service';
+import { auth } from '../../interfaces/authenticate.interface';
+import { ConfigurationService } from 'src/app/service/configuration/configuration.service';
+import { SnakbarComponent } from '../shared/snakbar/snakbar.component';
+import { module } from 'src/app/models/module';
 
 @Component({
   selector: 'app-home',
@@ -9,120 +13,72 @@ import { module, sub_module } from 'src/app/models/menu';
   styleUrls: ['./home.component.css']
 })
 export class HomeComponent implements OnInit {
+  @ViewChild(SnakbarComponent, {static: true}) childSnak: SnakbarComponent;
   titleModule: string = '';
   modules: module[];
+  //modules: module[];
   dataUser = {
-    name: 'Mario Lopez',
-    warehouse: 'CEDIS'
-  }
+    idUser: '',
+    whsCode: ''
+  };
 
   constructor(
+    private auth: AuthService,
+    private config: ConfigurationService,
     private router: Router
   ) { 
+    this.modules = [];
   }
 
   ngOnInit() {
+    this.getDataUser();
     this.getConfigMenu();
-    this.getTitleModule();
   }
+  //Mode menu angular material
   mode = new FormControl('over');
 
   logout() {
-    //this.auth.doLogout();
+    this.auth.doLogout();
     this.router.navigateByUrl('/login');
   }
   onChangeTittle(value: string) {
     this.titleModule = value;
   }
   getConfigMenu() {
-    
-    this.modules = [
-      {
-        path: 'dashboard',
-        title: 'Inicio',
-        icon: 'dashboard',
-        submodules: []
-      },
-      {
-        path: 'quality',
-        title: 'Calidad',
-        icon: 'verified',
-        submodules: []
-      },
-      {
-        path: '',
-        title: 'Traspasos',
-        icon: 'published_with_changes',
-        submodules: [
-          {
-            path: 'move',
-            title: 'Mov. Ubicación',
-            icon: '',
-          },
-          {
-            path: 'request',
-            title: 'Solicitud Traspaso',
-            icon: '',
-          },
-          {
-            path: 'production',
-            title: 'Env. a Producción',
-            icon: '',
-          },
-          {
-            path: 'receipt',
-            title: 'Recibo de Traspaso',
-            icon: '',
-          },
-          {
-            path: 'manual',
-            title: 'Transpaso Manual',
-            icon: '',
-          }
-        ]
-      },
-      {
-        path: 'shipping',
-        title: 'Remisionado',
-        icon: 'local_shipping',
-        submodules: []
-      },
-      {
-        path: 'shipment',
-        title: 'Embarque',
-        icon: 'directions_boat',
-        submodules: []
-      },
-      {
-        path: 'inventory',
-        title: 'Rec. de Inventario',
-        icon: 'checklist',
-        submodules: []
-      },
-      {
-        path: 'profiles',
-        title: 'Adm. Perfiles',
-        icon: 'group',
-        submodules: []
-      },
-      {
-        path: 'folio',
-        title: 'Folio SAP',
-        icon: 'qr_code_2',
-        submodules: []
+    const { IdUser } = this.auth.getDataToken();
+    this.config.getConfigurationProfile(IdUser).subscribe(response => {
+      if(response.Code == 0) {
+        this.modules = response.Data;
+        this.getTitleModule();
       }
-    ];;
+    }, (err) => {
+      this.childSnak.openSnackBar(err.message, 'Cerrar','error-snackbar');
+    });
   }
   getTitleModule() {
-    let urlArray = this.router.url.split('/');
-    //let lenghtArray = urlArray.length;
-    let index = 2;
-    let path = this.modules.find(val => val.path === urlArray[index]);
-    if(path === undefined) {
-      let { submodules } = this.modules.find(sub => sub.submodules.length > 0);
-      this.titleModule = submodules.find(val => val.path === urlArray[index]).title;
+    if(this.modules[0].Submodules.length > 0) {
+      //this.router.navigateByUrl(`/home/${this.modules[0].Submodules[0].Path}`);
+      this.titleModule = this.modules[0].Submodules[0].Title;
     } else {
-      this.titleModule = this.modules.find(val => val.path === urlArray[index]).title;
+      //this.router.navigateByUrl(`/home/${this.modules[0].Path}`);
+      this.titleModule = this.modules[0].Title;
     }
+    /* const urlArray = this.router.url.split('/');
+    let index = 2;
+    const firstModule = this.modules.find(val => val.Path === urlArray[index]);
+    if(firstModule === undefined) {
+      let { Submodules } = this.modules.find(sub => sub.Submodules.length > 0);
+      this.titleModule = Submodules.find(val => val.Path === urlArray[index]).Title;
+      this.router.navigateByUrl(`/home/${Submodules[0].Path}`);
+    } else {
+      this.titleModule = this.modules.find(val => val.Path === urlArray[index]).Title;
+      this.router.navigateByUrl(`/home/${firstModule.Path}`);
+    } */
   }
+  getDataUser() {
+    const {IdUser, WhsCode} = this.auth.getDataToken();
+    this.dataUser.idUser = IdUser;
+    this.dataUser.whsCode = WhsCode;
+  }
+  
 }

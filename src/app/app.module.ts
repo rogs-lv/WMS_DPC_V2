@@ -1,6 +1,7 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { ReactiveFormsModule, FormsModule } from '@angular/forms';
+import { HttpClientModule } from '@angular/common/http';
 
 import { AppComponent } from './app.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
@@ -24,6 +25,11 @@ import { ReceiptComponent } from './components/transfer/receipt/receipt.componen
 import { RequestComponent } from './components/transfer/request/request.component';
 import { ListprofileComponent } from './components/profiles/listprofile/listprofile.component';
 import { UserprofileComponent } from './components/profiles/userprofile/userprofile.component';
+import { ReadComponent } from './components/shared/read/read.component';
+import { SnakbarComponent } from './components/shared/snakbar/snakbar.component';
+import { FilterModulePipe } from './pipes/filter-module.pipe';
+import { FilterSubmodulePipe } from './pipes/filter-submodule.pipe';
+import { FilterTableUsersPipe } from './pipes/filter-table-users.pipe';
 
 @NgModule({
   declarations: [
@@ -43,7 +49,12 @@ import { UserprofileComponent } from './components/profiles/userprofile/userprof
     ReceiptComponent,
     RequestComponent,
     ListprofileComponent,
-    UserprofileComponent
+    UserprofileComponent,
+    ReadComponent,
+    SnakbarComponent,
+    FilterModulePipe,
+    FilterSubmodulePipe,
+    FilterTableUsersPipe
   ],
   imports: [
     BrowserModule,
@@ -52,6 +63,7 @@ import { UserprofileComponent } from './components/profiles/userprofile/userprof
     MaterialModule,
     ReactiveFormsModule,
     FormsModule,
+    HttpClientModule,
     AgGridModule.withComponents([])
   ],
   providers: [],

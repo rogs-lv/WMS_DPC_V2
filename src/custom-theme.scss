@@ -25,3 +25,22 @@ $WMS-theme: mat-light-theme($WMS-primary, $WMS-accent, $WMS-warn);
 // Alternatively, you can import and @include the theme mixins for each component
 // that you are using.
 @include angular-material-theme($WMS-theme);
+
+.blue-snackbar {
+    background: #2196F3;
+}
+.red-snackbar {
+    background: #F44336;
+}
+.error-snackbar{
+    color:white;
+    background: #F44336 !important;
+    .mat-button-wrapper {
+        color: white !important; // action text color
+        font-weight: normal;
+    }
+    .mat-simple-snackbar {
+        font-size: 18px;
+        font-weight: normal;
+    }
+}

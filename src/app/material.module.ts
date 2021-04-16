@@ -8,12 +8,7 @@ import {MatToolbarModule} from '@angular/material/toolbar';
 import { MatListModule, MatExpansionModule } from '@angular/material';
 import {MatMenuModule} from '@angular/material/menu'; 
 import {MatCardModule} from '@angular/material/card'; 
-/* import {MatCheckboxModule} from '@angular/material/checkbox'; 
-import {MatRadioModule} from '@angular/material/radio';
-import {MatFormFieldModule} from '@angular/material/form-field'; 
-import {MatSelectModule} from '@angular/material/select';
-import {MatInputModule} from '@angular/material/input'; */
-
+import {MatSnackBarModule} from '@angular/material/snack-bar'; 
 @NgModule({
     declarations: [],
     imports: [ 
@@ -26,11 +21,7 @@ import {MatInputModule} from '@angular/material/input'; */
         MatExpansionModule,
         MatMenuModule,
         MatCardModule,
-       /*  MatCheckboxModule,
-        MatRadioModule,
-        MatFormFieldModule,
-        MatSelectModule,
-        MatInputModule */
+        MatSnackBarModule
     ],
     exports: [
         MatSidenavModule,
@@ -41,11 +32,7 @@ import {MatInputModule} from '@angular/material/input'; */
         MatExpansionModule, 
         MatMenuModule,
         MatCardModule,
-       /*  MatCheckboxModule,
-        MatRadioModule,
-        MatFormFieldModule,
-        MatSelectModule,
-        MatInputModule */
+        MatSnackBarModule
     ],
     providers: [],
 })

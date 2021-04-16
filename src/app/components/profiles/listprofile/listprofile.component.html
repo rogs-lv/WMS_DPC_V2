@@ -1,10 +1,10 @@
 <div class="animate__animated animate__fadeIn">
     <div class="row">
         <div class="col-lg-8 col-md-8 col-sm-8 col-8 pb-1">
-            <button class="btn btn-primary" [routerLink]="['/home/profiles/user']"><span><i class="fas fa-user-plus"></i> Nuevo Usuario</span></button>
+            <button class="btn btn-primary" (click)="onClickNewUser()"><span><i class="fas fa-user-plus"></i> Nuevo Usuario</span></button>
         </div>
         <div class="col-lg-4 col-md-4 col-sm-8 col-8 pt-1">
-            <input type="text" class="form-control" placeholder="Buscar" [value]="">
+            <input type="text" class="form-control" placeholder="Buscar" #SearchTable="ngModel" name="SearchTable" [(ngModel)]="searchTable">
         </div>
     </div>
     <br>
@@ -15,118 +15,37 @@
                     <table class="table user-list scrollable">
                         <thead>
                             <tr>
-                                <th><span>ID usuario</span></th>
-                                <th><span>Nombre</span></th>
+                                <th><span>Id Usuario</span></th>
+                                <th><span>Nom. Usuario</span></th>
+                                <!-- <th><span>Empleado</span></th> -->
+                                <th><span>Almacén</span></th>
                                 <th class="text-center"><span>Status</span></th>
                                 <th class="text-center"><span>Opciones</span></th>
                             </tr>
                         </thead>
                         <tbody>
-                            <tr>
+                            <tr *ngFor="let p of profiles | filterTableUsers: searchTable">
                                 <td>
-                                    <img src="../../../assets/profile/user.svg" alt="">
-                                    <a class="user-link">146478</a>
+                                    <img class="" src="../../../assets/profile/user.svg" alt="">
+                                    <a class="user-link">{{p.IdUser}}</a>
                                 </td>
                                 <td>                                            
-                                    <a>Mila Kunis</a>
+                                    <a>{{p.NameUser}}</a>
+                                </td>
+                                <!-- <td>                                            
+                                    <a>{{p.FirstName}} {{p.LastName}}</a>
+                                </td> -->
+                                <td>                                            
+                                    <a>{{p.WhsCode}}</a>
                                 </td>
                                 <td class="text-center">
-                                    <span class="badge badge-success">Activo</span>
+                                    <span class="badge badge-success" *ngIf="p.Status == 'A'">Activo</span>
+                                    <span class="badge badge-error" *ngIf="p.Status != 'A'">Inactivo</span>
                                 </td>
                                 <td style="width: 20%;">
                                     <div class="d-flex justify-content-around">
-                                        <button type="button" class="btn btn-info"><span><i class="fas fa-pencil-alt"></i></span></button>
-                                        <button type="button" class="btn btn-info"><span><i class="fas fa-warehouse"></i></span></button>
-                                    </div>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    <img src="../../../assets/profile/user.svg" alt="">
-                                    <a class="user-link">146478</a>
-                                </td>
-                                <td>                                            
-                                    <a>Mila Kunis</a>
-                                </td>
-                                <td class="text-center">
-                                    <span class="badge badge-success">Activo</span>
-                                </td>
-                                <td style="width: 20%;">
-                                    <div class="d-flex justify-content-around">
-                                        <button type="button" class="btn btn-info"><span><i class="fas fa-pencil-alt"></i></span></button>
-                                        <button type="button" class="btn btn-info"><span><i class="fas fa-warehouse"></i></span></button>
-                                    </div>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    <img src="../../../assets/profile/user.svg" alt="">
-                                    <a class="user-link">146478</a>
-                                </td>
-                                <td>                                            
-                                    <a>Mila Kunis</a>
-                                </td>
-                                <td class="text-center">
-                                    <span class="badge badge-success">Activo</span>
-                                </td>
-                                <td style="width: 20%;">
-                                    <div class="d-flex justify-content-around">
-                                        <button type="button" class="btn btn-info"><span><i class="fas fa-pencil-alt"></i></span></button>
-                                        <button type="button" class="btn btn-info"><span><i class="fas fa-warehouse"></i></span></button>
-                                    </div>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    <img src="../../../assets/profile/user.svg" alt="">
-                                    <a class="user-link">146478</a>
-                                </td>
-                                <td>                                            
-                                    <a>Mila Kunis</a>
-                                </td>
-                                <td class="text-center">
-                                    <span class="badge badge-success">Activo</span>
-                                </td>
-                                <td style="width: 20%;">
-                                    <div class="d-flex justify-content-around">
-                                        <button type="button" class="btn btn-info"><span><i class="fas fa-pencil-alt"></i></span></button>
-                                        <button type="button" class="btn btn-info"><span><i class="fas fa-warehouse"></i></span></button>
-                                    </div>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    <img src="../../../assets/profile/user.svg" alt="">
-                                    <a class="user-link">146478</a>
-                                </td>
-                                <td>                                            
-                                    <a>Mila Kunis</a>
-                                </td>
-                                <td class="text-center">
-                                    <span class="badge badge-success">Activo</span>
-                                </td>
-                                <td style="width: 20%;">
-                                    <div class="d-flex justify-content-around">
-                                        <button type="button" class="btn btn-info"><span><i class="fas fa-pencil-alt"></i></span></button>
-                                        <button type="button" class="btn btn-info"><span><i class="fas fa-warehouse"></i></span></button>
-                                    </div>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    <img src="../../../assets/profile/user.svg" alt="">
-                                    <a class="user-link">146478</a>
-                                </td>
-                                <td>                                            
-                                    <a>Mila Kunis</a>
-                                </td>
-                                <td class="text-center">
-                                    <span class="badge badge-success">Activo</span>
-                                </td>
-                                <td style="width: 20%;">
-                                    <div class="d-flex justify-content-around">
-                                        <button type="button" class="btn btn-info"><span><i class="fas fa-pencil-alt"></i></span></button>
-                                        <button type="button" class="btn btn-info"><span><i class="fas fa-warehouse"></i></span></button>
+                                        <button type="button" class="btn btn-info" (click)="onEditProfile(p)"><span><i class="fas fa-pencil-alt"></i></span></button>
+                                        <button type="button" class="btn btn-info" (click)="onCheckWarehouse(p.IdUser)"><span><i class="fas fa-warehouse"></i></span></button>
                                     </div>
                                 </td>
                             </tr>
@@ -137,3 +56,4 @@
         </div>
     </div>
 </div>
+<app-snakbar></app-snakbar>

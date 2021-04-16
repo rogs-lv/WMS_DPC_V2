@@ -1,171 +1,123 @@
 <div class="animate__animated animate__fadeIn">
     <div class="row">
         <div class="col-lg-12 col-md-12 col-sm-12 col-12 pb-1 pb-1  d-flex justify-content-end">
-            <button class="btn btn-primary" [routerLink]="['/home/profiles/list']"><span><i class="fa fa-arrow-circle-left"></i> Regresar</span></button>
+            <button class="btn btn-primary" [routerLink]="['/home/profiles/list']" ><span><i class="fa fa-arrow-circle-left"></i> Regresar</span></button>
         </div>
     </div>
-    <div class="row">
-        <div class="col-lg-3 col-md-3 col-sm-12 col-12">
-            <div class="form-group">
-                <label for="Recuento">ID Usuario</label>
-                <input type="text" class="form-control" id="IdUser">
+    <form (ngSubmit)="onClickProfile(formProfile)" #formProfile="ngForm" class="login100-form validate-form">
+        <div class="row">
+            <div class="col-lg-3 col-md-3 col-sm-12 col-12">
+                <div class="form-group">
+                    <label for="IdUser" placeholder="Id Usuario">ID Usuario</label>
+                    <input type="text" class="form-control" id="IdUser" required #IdUser="ngModel" name="IdUser" [(ngModel)]="profileUser.IdUser" [disabled]="action !== 'I'">
+                    <span class="text-danger" *ngIf="(formProfile.submitted  || formProfile.controls['idUser']?.touched ) && formProfile.controls['idUser'].errors"><i class="fas fa-user-circle"></i> El ID es obligatorio</span>
+                </div>
+            </div>
+            <div class="col-lg-5 col-md-5 col-sm-12 col-12">
+                <div class="form-group">
+                    <label for="NameUser">Nombre</label>
+                    <input type="text" class="form-control" id="NameUser" required #NameUser="ngModel" name="NameUser" [(ngModel)]="profileUser.NameUser">
+                    <span class="text-danger" *ngIf="(formProfile.submitted  || formProfile.controls['nameUser']?.touched ) && formProfile.controls['nameUser'].errors"><i class="fas fa-user-circle"></i> El nombre es obligatorio</span>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-3 col-sm-12 col-12 d-flex align-items-center">
+                <div class="custom-control custom-checkbox">
+                    <input type="checkbox" class="custom-control-input" id="status" [checked]="profileUser.Status == 'A' ? true : false">
+                    <label class="custom-control-label" for="status">Estatus</label>
+                </div>
             </div>
         </div>
-        <div class="col-lg-5 col-md-5 col-sm-12 col-12">
-            <div class="form-group">
-                <label for="Recuento">Nombre</label>
-                <input type="text" class="form-control" id="NameUser">
+        <div class="row">
+            <div class="col-lg-3 col-md-3 col-sm-12 col-12">
+                <div class="form-group">
+                    <label for="warehouse">Almacén</label>
+                    <select class="form-control" id="warehouse" required #Warehouse="ngModel" name="Warehouse" [(ngModel)]="profileUser.WhsCode">
+                        <option>CEDIS</option>
+                    </select>
+                    <span class="text-danger" *ngIf="(formProfile.submitted  || formProfile.controls['warehouse']?.touched ) && formProfile.controls['warehouse'].errors"><i class="fas fa-user-circle"></i> El almacén es obligatorio</span>
+                </div>
+            </div>
+            <div class="col-lg-5 col-md-5 col-sm-12 col-12">
+                <div class="form-group">
+                    <label for="Recuento">Password</label>
+                    <input type="password" placeholder="**********" class="form-control" id="password" #Password="ngModel" name="Password" [(ngModel)]="profileUser.Password">
+                </div>
             </div>
         </div>
-        <div class="col-lg-3 col-md-3 col-sm-12 col-12 d-flex align-items-center">
-            <div class="custom-control custom-checkbox">
-                <input type="checkbox" class="custom-control-input" id="status">
-                <label class="custom-control-label" for="status">Estatus</label>
-            </div>
-        </div>
-    </div>
-    <br>
-    <div class="row">
-        <div class="col-lg-6 col-md-6 col-sm-12 col-12 pb-2">
-            <div class="card">
-                <h5 class="card-header">Menu Principal</h5>
-                <div class="card-body">
-                    <div class="row">
-                        <div class="col-lg-6 col-md-6 col-sm-12 col-12">
-                            <div class="custom-control custom-checkbox image-checkbox">
-                                <input type="checkbox" class="custom-control-input" id="quality">
-                                <label class="custom-control-label" for="quality">
-                                    <img src="../../../../assets/profile/verified.svg" width="60px;" height="60px;" alt="#" class="img-fluid opacity_icon">
-                                </label>
-                            </div>
-                            <div class="card-body">
-                                <span>Calidad</span>
-                            </div>
-                        </div>
-                        <div class="col-lg-6 col-md-6 col-sm-12 col-12">
-                            <div class="custom-control custom-checkbox image-checkbox">
-                                <input type="checkbox" class="custom-control-input" id="local_shipping">
-                                <label class="custom-control-label" for="local_shipping">
-                                    <img src="../../../../assets/profile/local_shipping.svg" width="60px;" height="60px;" alt="#" class="img-fluid opacity_icon">
-                                </label>
-                            </div>
-                            <div class="card-body">
-                                <span>Remisionado</span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-lg-6 col-md-6 col-sm-12 col-12">
-                            <div class="custom-control custom-checkbox image-checkbox">
-                                <input type="checkbox" class="custom-control-input" id="directions_boat">
-                                <label class="custom-control-label" for="directions_boat">
-                                    <img src="../../../../assets/profile/directions_boat.svg" width="60px;" height="60px;" alt="#" class="img-fluid opacity_icon">
-                                </label>
-                            </div>
-                            <div class="card-body">
-                                <span>Embarque</span>
-                            </div>
-                        </div>
-                        <div class="col-lg-6 col-md-6 col-sm-12 col-12">
-                            <div class="custom-control custom-checkbox image-checkbox">
-                                <input type="checkbox" class="custom-control-input" id="checklist">
-                                <label class="custom-control-label" for="checklist">
-                                    <img src="../../../../assets/profile/checklist.svg" width="60px;" height="60px;" alt="#" class="img-fluid opacity_icon">
-                                </label>
-                            </div>
-                            <div class="card-body">
-                                <span>Rec. de Inventario</span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-lg-6 col-md-6 col-sm-12 col-12">
-                            <div class="custom-control custom-checkbox image-checkbox">
-                                <input type="checkbox" class="custom-control-input" id="group">
-                                <label class="custom-control-label" for="group">
-                                    <img src="../../../../assets/profile/group.svg" width="60px;" height="60px;" alt="#" class="img-fluid opacity_icon">
-                                </label>
-                            </div>
-                            <div class="card-body">
-                                <span>Adm. Perfiles</span>
-                            </div>
-                        </div>
-                        <div class="col-lg-6 col-md-6 col-sm-12 col-12">
-                            <div class="custom-control custom-checkbox image-checkbox">
-                                <input type="checkbox" class="custom-control-input" id="qr_code_2">
-                                <label class="custom-control-label" for="qr_code_2">
-                                    <img src="../../../../assets/profile/qr_code_2.svg" width="60px;" height="60px;" alt="#" class="img-fluid opacity_icon">
-                                </label>
-                            </div>
-                            <div class="card-body">
-                                <span>Folio SAP</span>
+        <br>
+        <div class="row">
+            <div class="col-lg-6 col-md-6 col-sm-12 col-12 pb-2">
+                <div class="card">
+                    <h5 class="card-header">Menu Principal</h5>
+                    <div class="card-body">
+                        <div class="row">
+                            <div *ngFor="let module of modules | filterModule: 'TRAN'; let i = index">
+                                <div *ngIf="module.Path">
+                                    <div class="card2 col-lg-12 col-md-12 col-sm-12 col-12">                                    
+                                        <div class="custom-control custom-checkbox image-checkbox">
+                                            <input type="checkbox" class="custom-control-input" [id]="module.Path" [checked]="module.Status === 'A' ? true : false">
+                                            <label class="custom-control-label" [for]="module.Path">
+                                                <img src="../../../../assets/profile/{{module.Icon}}.svg" width="60px;" height="60px;" alt="#" class="img-fluid opacity_icon">
+                                            </label>
+                                        </div>
+                                        <div class="card-body">
+                                            <span>{{module.Title}}</span>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
-        <div class="col-lg-6 col-md-6 col-sm-12 col-12">
-            <div class="card">
-                <h5 class="card-header">Menu Traspaso</h5>
-                <div class="card-body">
-                    <ul class="list-group list-group-flush">
-                        <li class="list-group-item">
-                            <div class="custom-control custom-checkbox">
-                                <input type="checkbox" class="custom-control-input" id="movimientoUbicacion">
-                                <label class="custom-control-label" for="movimientoUbicacion">Mov. Ubicación</label>
-                            </div>
-                        </li>
-                        <li class="list-group-item">
-                            <div class="custom-control custom-checkbox">
-                                <input type="checkbox" class="custom-control-input" id="solicitudTraspaso">
-                                <label class="custom-control-label" for="solicitudTraspaso">Solicitud Traspaso</label>
-                            </div>
-                        </li>
-                        <li class="list-group-item">
-                            <div class="custom-control custom-checkbox">
-                                <input type="checkbox" class="custom-control-input" id="EnvProduccion">
-                                <label class="custom-control-label" for="EnvProduccion">Env. Producción</label>
-                            </div>
-                        </li>
-                        <li class="list-group-item">
-                            <div class="custom-control custom-checkbox">
-                                <input type="checkbox" class="custom-control-input" id="reciboTraspaso">
-                                <label class="custom-control-label" for="reciboTraspaso">Recibo de Traspaso</label>
-                            </div>
-                        </li>
-                        <li class="list-group-item">
-                            <div class="custom-control custom-checkbox">
-                                <input type="checkbox" class="custom-control-input" id="traspasoManual">
-                                <label class="custom-control-label" for="traspasoManual">Traspaso Manual</label>
-                            </div>
-                        </li>
-                    </ul>
+            <div class="col-lg-6 col-md-6 col-sm-12 col-12">
+                <div class="card">
+                    <h5 class="card-header">Menu Traspaso</h5>
+                    <div class="card-body">
+                        <ul class="list-group list-group-flush">
+                            <li class="list-group-item" *ngFor="let sub of modules | filterSubmodule: 'TRAN'; let j = index;">
+                                <div class="custom-control custom-checkbox">
+                                    <input type="checkbox" class="custom-control-input" [id]="sub.Path" [checked]="sub.Status === 'A' ? true : false">
+                                    <label class="custom-control-label" for="movimientoUbicacion">{{sub.Title}}</label>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
-    <br>
-    <div class="row">
-        <div class="col-lg-12 col-md-12 col-sm-12 col-12">
-            <div class="card">
-                <div class="card-body">
-                    <h5 class="card-title">Otras Configuraciones</h5>
-                    <div class="row">
-                        <div class="col-lg-12 col-md-12 col-sm-12 col-12">
-                            <div class="custom-control custom-checkbox">
-                                <input type="checkbox" class="custom-control-input" id="Ciego">
-                                <label class="custom-control-label" for="Ciego">Permitir Recuento Ciego</label>
-                              </div>
-                              <div class="custom-control custom-checkbox">
-                                <input type="checkbox" class="custom-control-input" id="Folio">
-                                <label class="custom-control-label" for="Folio">Permitir Lectura de Folios</label>
-                              </div>
+        <br>
+        <div class="row">
+            <div class="col-lg-12 col-md-12 col-sm-12 col-12">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Otras Configuraciones</h5>
+                        <div class="row">
+                            <div class="col-lg-12 col-md-12 col-sm-12 col-12">
+                                <div class="custom-control custom-checkbox" *ngFor="let conf of additionalSett">
+                                    <input type="checkbox" class="custom-control-input" [id]="conf.IdConfig" [name]="conf.IdConfig" [checked]="conf.Status== 'A' ? true : false">
+                                    <label class="custom-control-label" for="Ciego">{{conf.NameConfig}}</label>
+                                </div>
+                                <!-- <div class="custom-control custom-checkbox">
+                                    <input type="checkbox" class="custom-control-input" id="Ciego">
+                                    <label class="custom-control-label" for="Ciego">Permitir Recuento Ciego</label>
+                                </div>
+                                <div class="custom-control custom-checkbox">
+                                    <input type="checkbox" class="custom-control-input" id="Folio">
+                                    <label class="custom-control-label" for="Folio">Permitir Lectura de Folios</label>
+                                </div> -->
+                            </div>
                         </div>
                     </div>
-                </div>
-              </div>
+                  </div>
+            </div>
         </div>
-    </div>
-    
+        <br>
+        <div class="row d-flex justify-content-center">
+            <button class="btn btn-primary" [disabled]="!profileUser.IdUser || !profileUser.NameUser || !profileUser.WhsCode || !profileUser.Password" *ngIf="!loading && action === 'I'" (click)="onCreateUser()"><span><i class="fa fa-user-plus"></i> Crear</span></button>
+            <button class="btn btn-primary" [disabled]="!profileUser.IdUser || !profileUser.NameUser || !profileUser.WhsCode" *ngIf="loading && action === 'U'" (click)="onUpdateUser()"><span><i class="fa fa-user-edit"></i> Actualizar</span></button>
+            <button class="btn btn-primary" *ngIf="loading"><span><i class="fas fa-spinner fa-pulse"></i></span></button>
+        </div>
+    </form>    
 </div>
+<app-snakbar></app-snakbar>
