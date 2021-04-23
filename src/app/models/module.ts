@@ -13,3 +13,12 @@ export class submodule {
     Title: string;
     Icon: string;
 }
+
+export class moduleHome {
+    IdModule: string;
+    Path: string;
+    Title: string;
+    Icon: string;
+    Status: boolean;
+    Principal: string;
+}

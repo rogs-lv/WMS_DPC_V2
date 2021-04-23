@@ -28,6 +28,8 @@
               "node_modules/@fortawesome/fontawesome-free/css/all.min.css",
               "src/custom-theme.scss",
               "node_modules/animate.css/animate.min.css",
+              "node_modules/ag-grid-community/dist/styles/ag-grid.css",
+              "node_modules/ag-grid-community/dist/styles/ag-theme-alpine.css",
               "src/styles.css"
             ],
             "scripts": [

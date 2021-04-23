@@ -2,11 +2,10 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AuthService } from 'src/app/service/authentication/auth.service';
-import { auth } from '../../interfaces/authenticate.interface';
 import { ConfigurationService } from 'src/app/service/configuration/configuration.service';
 import { SnakbarComponent } from '../shared/snakbar/snakbar.component';
-import { module } from 'src/app/models/module';
-
+import { moduleHome } from 'src/app/models/module';
+import { ServiceLayer } from 'src/app/service/shared/ServicesLayer.service';
 @Component({
   selector: 'app-home',
   templateUrl: './home.component.html',
@@ -15,8 +14,7 @@ import { module } from 'src/app/models/module';
 export class HomeComponent implements OnInit {
   @ViewChild(SnakbarComponent, {static: true}) childSnak: SnakbarComponent;
   titleModule: string = '';
-  modules: module[];
-  //modules: module[];
+  modules: moduleHome[];
   dataUser = {
     idUser: '',
     whsCode: ''
@@ -24,10 +22,10 @@ export class HomeComponent implements OnInit {
 
   constructor(
     private auth: AuthService,
+    private sapSL: ServiceLayer,
     private config: ConfigurationService,
     private router: Router
   ) { 
-    this.modules = [];
   }
 
   ngOnInit() {
@@ -39,11 +37,13 @@ export class HomeComponent implements OnInit {
 
   logout() {
     this.auth.doLogout();
+    this.sapSL.deleteSession();
     this.router.navigateByUrl('/login');
   }
   onChangeTittle(value: string) {
     this.titleModule = value;
   }
+  
   getConfigMenu() {
     const { IdUser } = this.auth.getDataToken();
     this.config.getConfigurationProfile(IdUser).subscribe(response => {
@@ -55,26 +55,25 @@ export class HomeComponent implements OnInit {
       this.childSnak.openSnackBar(err.message, 'Cerrar','error-snackbar');
     });
   }
+  
   getTitleModule() {
-    if(this.modules[0].Submodules.length > 0) {
-      //this.router.navigateByUrl(`/home/${this.modules[0].Submodules[0].Path}`);
-      this.titleModule = this.modules[0].Submodules[0].Title;
-    } else {
-      //this.router.navigateByUrl(`/home/${this.modules[0].Path}`);
-      this.titleModule = this.modules[0].Title;
+    const urlArray = this.router.url.split('/');
+    const index = 2;
+    const firstLevel = this.pathExist(urlArray[index])
+    if( firstLevel !== null) { // exist in first level
+      this.titleModule = firstLevel.Title;
     }
-    /* const urlArray = this.router.url.split('/');
-    let index = 2;
-    const firstModule = this.modules.find(val => val.Path === urlArray[index]);
-    if(firstModule === undefined) {
-      let { Submodules } = this.modules.find(sub => sub.Submodules.length > 0);
-      this.titleModule = Submodules.find(val => val.Path === urlArray[index]).Title;
-      this.router.navigateByUrl(`/home/${Submodules[0].Path}`);
-    } else {
-      this.titleModule = this.modules.find(val => val.Path === urlArray[index]).Title;
-      this.router.navigateByUrl(`/home/${firstModule.Path}`);
-    } */
   }
+
+  private pathExist(path: string): any {
+    const indexPath = this.modules.findIndex( x => x.Path === path);
+    if(indexPath !== -1){ // Exist path in array
+      return this.modules[indexPath];
+    } else { // Not exist path in array
+      return null;
+    }
+  }
+
   getDataUser() {
     const {IdUser, WhsCode} = this.auth.getDataToken();
     this.dataUser.idUser = IdUser;

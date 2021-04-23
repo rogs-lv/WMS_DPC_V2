@@ -7,6 +7,7 @@ import { Router } from '@angular/router';
 import { environment } from 'src/environments/environment';
 import jwt_decode from "jwt-decode";
 import { response } from 'src/app/interfaces/response.interface';
+import { module, moduleHome } from 'src/app/models/module';
 
 @Injectable({
   providedIn: 'root'
@@ -14,13 +15,14 @@ import { response } from 'src/app/interfaces/response.interface';
 
 export class AuthService {
   endpoint: string = environment.urlApi;
-  /* headers = new HttpHeaders().set('Content-Type', 'application/json').set('Access-Control-Allow-Origin', '*'); */
   currentUser = {};
+  /* modulesHome: moduleHome[]; */
 
   constructor(
     private http: HttpClient,
     public router: Router
   ) {
+    /* this.modulesHome = []; */
   }
 
   // Sign-in
@@ -81,5 +83,16 @@ export class AuthService {
       msg = `Error Code: ${error.status}\nMessage: ${error.message}`;
     }
     return throwError(msg);
+  }
+
+  verifyPath(path: string): Observable<module> {
+    const header = new HttpHeaders()
+        .set('Authorization', this.getToken());
+    const api = `${this.endpoint}Configuration/GetVerifypath?userId=${this.getDataToken().IdUser}&path=${path}`;
+    return this.http.get(api, { headers: header }).pipe(
+      map( (response: any) => {
+          return response.Data;
+      })
+    );
   }
 }

@@ -35,3 +35,10 @@ table {
     display: grid;
     justify-content: center;
 }
+
+.inputLabelDisabled {
+    color: grey;
+}
+.inputLabelEnabled {
+    color: green;
+}

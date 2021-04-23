@@ -15,17 +15,17 @@
         <div class="mt-3">
           <mat-nav-list >
             <div *ngFor="let mod of modules" >
-              <div *ngIf="mod.Submodules.length === 0">
+              <div *ngIf="mod.Principal === '' && mod.Path !== ''">
                 <a mat-list-item (click)="onChangeTittle(mod.Title)" [routerLink]="[mod.Path]"><mat-icon>{{mod.Icon}}</mat-icon><span>{{mod.Title}}</span></a>      
               </div> 
-              <div *ngIf="mod.Submodules.length > 0">
+              <div *ngIf="mod.Path === ''">
                 <mat-expansion-panel [class.mat-elevation-z0]="true" dense>
                   <mat-expansion-panel-header class="pdgPanelHeader">
                     <mat-icon mat-list-icon>{{mod.Icon}}</mat-icon>
                     <span class="pdgSubmenu">{{mod.Title}}</span>
                   </mat-expansion-panel-header>
                   <mat-nav-list dense>
-                      <a *ngFor="let item of mod.Submodules" (click)="onChangeTittle(item.Title)" mat-list-item [routerLink]="[item.Path]">{{item.Title}}</a>
+                      <a *ngFor="let item of modules | filterSubmodule: 'TRAN'" (click)="onChangeTittle(item.Title)" mat-list-item [routerLink]="[item.Path]">{{item.Title}}</a>
                   </mat-nav-list>
                 </mat-expansion-panel>
               </div> 
@@ -49,10 +49,10 @@
           <div class="card highlight-card card-small">
             <svg id="rocket" alt="Rocket Ship" xmlns="http://www.w3.org/2000/svg" width="101.678" height="101.678" viewBox="0 0 101.678 101.678">
               <g id="Group_83" data-name="Group 83" transform="translate(-141 -696)">
-                <circle id="Ellipse_8" data-name="Ellipse 8" cx="50.839" cy="50.839" r="50.839" transform="translate(141 696)" fill="#F44336"/>
+                <circle id="Ellipse_8" data-name="Ellipse 8" cx="50.839" cy="50.839" r="50.839" transform="translate(141 696)" fill="#F44336"/>                
                 <g id="Group_47" data-name="Group 47" transform="translate(165.185 720.185)">
-                  <path id="Path_33" data-name="Path 33" d="M3.4,42.615a3.084,3.084,0,0,0,3.553,3.553,21.419,21.419,0,0,0,12.215-6.107L9.511,30.4A21.419,21.419,0,0,0,3.4,42.615Z" transform="translate(0.371 3.363)" fill="#fff"/>
-                  <path id="Path_34" data-name="Path 34" d="M53.3,3.221A3.09,3.09,0,0,0,50.081,0,48.227,48.227,0,0,0,18.322,13.437c-6-1.666-14.991-1.221-18.322,7.218A33.892,33.892,0,0,1,9.439,25.1l-.333.666a3.013,3.013,0,0,0,.555,3.553L23.985,43.641a2.9,2.9,0,0,0,3.553.555l.666-.333A33.892,33.892,0,0,1,32.647,53.3c8.55-3.664,8.884-12.326,7.218-18.322A48.227,48.227,0,0,0,53.3,3.221ZM34.424,9.772a6.439,6.439,0,1,1,9.106,9.106,6.368,6.368,0,0,1-9.106,0A6.467,6.467,0,0,1,34.424,9.772Z" transform="translate(0 0.005)" fill="#fff"/>
+                  <path d="M0 0h24v24H0V0z" fill="none"/>
+                  <path fill="#FFFFFF" style="transform: scale(2.3);" d="M16.66 4.52l2.83 2.83-2.83 2.83-2.83-2.83 2.83-2.83M9 5v4H5V5h4m10 10v4h-4v-4h4M9 15v4H5v-4h4m7.66-13.31L11 7.34 16.66 13l5.66-5.66-5.66-5.65zM11 3H3v8h8V3zm10 10h-8v8h8v-8zm-10 0H3v8h8v-8z"/>
                 </g>
               </g>
             </svg>

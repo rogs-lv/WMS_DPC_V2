@@ -12,21 +12,23 @@ import { ProduccionComponent } from '../transfer/produccion/produccion.component
 import { ReceiptComponent } from '../transfer/receipt/receipt.component';
 import { RequestComponent } from '../transfer/request/request.component';
 import { PROFILE_ROUTES } from '../profiles/profiles.routes';
-import { NgModule } from '@angular/core';
+import { AuthHomeGuard } from 'src/app/guards/auth-home.guard';
+import { PageNotFoundComponent } from '../shared/page-not-found/page-not-found.component';
 
 export const HOME_ROUTES: Routes = [
     { path: 'dashboard', component:  DashboardComponent},
-    { path: 'quality', component:  QualityComponent},
-    { path: 'shipping', component:  ShippingComponent},
-    { path: 'shipment', component:  ShipmentComponent},
-    { path: 'inventory', component:  InventoryComponent},
-    { path: 'profiles', component:  ProfilesComponent, children: PROFILE_ROUTES },
-    { path: 'folio', component:  FolioComponent},
-    { path: 'manual', component:  ManualComponent},
-    { path: 'move', component:  MoveComponent},
-    { path: 'production', component:  ProduccionComponent},
-    { path: 'receipt', component:  ReceiptComponent},
-    { path: 'request', component:  RequestComponent},
+    { path: 'quality', component:  QualityComponent, canActivate: [ AuthHomeGuard ]},
+    { path: 'shipping', component:  ShippingComponent, canActivate: [ AuthHomeGuard ]},
+    { path: 'shipment', component:  ShipmentComponent, canActivate: [ AuthHomeGuard ]},
+    { path: 'inventory', component:  InventoryComponent, canActivate: [ AuthHomeGuard ]},
+    { path: 'profiles', component:  ProfilesComponent, canActivate: [ AuthHomeGuard ], children: PROFILE_ROUTES },
+    { path: 'folio', component:  FolioComponent, canActivate: [ AuthHomeGuard ]},
+    { path: 'manual', component:  ManualComponent, canActivate: [ AuthHomeGuard ]},
+    { path: 'move', component:  MoveComponent, canActivate: [ AuthHomeGuard ]},
+    { path: 'production', component:  ProduccionComponent, canActivate: [ AuthHomeGuard ]},
+    { path: 'receipt', component:  ReceiptComponent, canActivate: [ AuthHomeGuard ]},
+    { path: 'request', component:  RequestComponent, canActivate: [ AuthHomeGuard ]},
+    /* { path: 'pagenotfound', component:  PageNotFoundComponent}, */
     { path: '**', pathMatch: 'full', redirectTo:'dashboard'},
 ];
 

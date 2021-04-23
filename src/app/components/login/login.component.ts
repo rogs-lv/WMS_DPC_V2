@@ -39,7 +39,6 @@ export class LoginComponent implements OnInit {
           this.loading = false;
         }
       }, (err) => {
-        console.log('---', err)
         this.childSnak.openSnackBar(err.message, 'Cerrar', 'error-snackbar')
         this.loading = false;
       });

@@ -30,6 +30,7 @@ import { SnakbarComponent } from './components/shared/snakbar/snakbar.component'
 import { FilterModulePipe } from './pipes/filter-module.pipe';
 import { FilterSubmodulePipe } from './pipes/filter-submodule.pipe';
 import { FilterTableUsersPipe } from './pipes/filter-table-users.pipe';
+import { PageNotFoundComponent } from './components/shared/page-not-found/page-not-found.component';
 
 @NgModule({
   declarations: [
@@ -54,7 +55,8 @@ import { FilterTableUsersPipe } from './pipes/filter-table-users.pipe';
     SnakbarComponent,
     FilterModulePipe,
     FilterSubmodulePipe,
-    FilterTableUsersPipe
+    FilterTableUsersPipe,
+    PageNotFoundComponent
   ],
   imports: [
     BrowserModule,

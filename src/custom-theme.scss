@@ -34,7 +34,7 @@ $WMS-theme: mat-light-theme($WMS-primary, $WMS-accent, $WMS-warn);
 }
 .error-snackbar{
     color:white;
-    background: #F44336 !important;
+    background: #dc3545 !important;
     .mat-button-wrapper {
         color: white !important; // action text color
         font-weight: normal;
@@ -47,9 +47,22 @@ $WMS-theme: mat-light-theme($WMS-primary, $WMS-accent, $WMS-warn);
 
 .success-snackbar{
     color:white;
-    background: #47ad4f !important;
+    background: #28a745 !important;
     .mat-button-wrapper {
         color: white !important; // action text color
+        font-weight: normal;
+    }
+    .mat-simple-snackbar {
+        font-size: 18px;
+        font-weight: normal;
+    }
+}
+
+.warning-snackbar{
+    color:black;
+    background: #ffc107 !important;
+    .mat-button-wrapper {
+        color: black !important; // action text color
         font-weight: normal;
     }
     .mat-simple-snackbar {

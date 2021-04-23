@@ -4,7 +4,9 @@
 
 export const environment = {
   production: false,
-  urlApi: 'https://localhost:44332/wms/'
+  urlApi: 'https://localhost:44332/wms/',
+  urlSL: 'https://hanab1:50000/b1s/v1/',
+  credentials: { UserName: 'manager', Password: 'eviciti', CompanyDB: 'DESARROLLOS21' }
 };
 
 /*

@@ -1,52 +1,268 @@
-import { Component, OnInit} from '@angular/core';
+import { Component, OnInit, ViewChild} from '@angular/core';
+import { NgForm } from '@angular/forms';
+import { fieldAction, lineQuality } from 'src/app/models/quality';
+import { warehouse } from 'src/app/models/warehouse';
+import { QualityService } from 'src/app/service/quality/quality.service';
+import { ServiceLayer } from 'src/app/service/shared/ServicesLayer.service';
+import { SnakbarComponent } from '../shared/snakbar/snakbar.component';
+import { binLocation, transfer, batchNumbers, transferLine } from '../../models/transfer';
 @Component({
   selector: 'app-quality',
   templateUrl: './quality.component.html',
   styleUrls: ['./quality.component.css']
 })
 export class QualityComponent implements OnInit {
-
+  @ViewChild(SnakbarComponent, {static: true}) childSnak: SnakbarComponent;
+  
+  rowData =[];
+  private gridApi;
+  stayScrolledToEnd = true;
+  
+  textActions: string = '';
+  loading: boolean = false;
   processRead: boolean = false;
-  textAction: string = '';
-  titleCard: string = '';
-  checkBox = {
-    bloq: false,
-    desbloq: false,
-    move: false
-  }
-  columnDefs = [
-    { field: 'Lote', resizable: true, width: 300, },
-    { field: 'Cantidad', resizable: true, width: 300, },
-    { field: 'Descripción', resizable: true, width: 300,}
-  ];
+  fieldMove: fieldAction;
+  readManual: boolean = false;
+  linesQuantity: lineQuality[];
+  warehouses: warehouse[];
+  fieldLabel: string = '';
+  modelOnChange = '';
 
-  rowData = [
-    { Lote: '2104071234501', Cantidad: 35000, Descripción: 'Celica' },
-    { Lote: '2104071234502', Cantidad: 32000, Descripción: 'Mondeo'},
-    { Lote: '2104071234503', Cantidad: 72000, Descripción: 'Boxter' }
+  columnDefs = [
+    { headerName: '#', valueGetter: 'node.rowIndex + 1', resizable: false, width: 45},
+    { headerName: 'Lote', field: 'DistNumber', resizable: true, width: 170, },
+    { headerName: 'Cantidad', field: 'Quantity', resizable: true, width: 100, },
+    { headerName: 'Descripcion', field: 'ItemName', resizable: true, width: 270,}
   ];
-  constructor() { }
+  
+  
+  constructor(
+    private qualityService: QualityService,
+    private serviceLayer: ServiceLayer
+  ) { 
+    this.fieldMove = new fieldAction;
+    this.linesQuantity = [];
+    this.warehouses = [];
+  }
 
   ngOnInit() {
   }
-
-  onSubmit() {}
   
+  onGridReady(params) {
+    this.gridApi = params.api;
+  }
+
+  getWarehouse() {
+    if(this.warehouses.length === 0) {
+      this.qualityService.getWarehouseQuality().subscribe(response => {
+        if(response.Code === 0) {
+          this.warehouses = response.Data;
+        }
+      }, (err) => {
+        this.childSnak.openSnackBar(err.message, 'Cerrar','error-snackbar');
+      });
+    }
+  }
+
+  readCodebars(event) {
+    if(event !== null && event !== '') {
+      let existBatch = this.existCodebars(event)
+      if(existBatch === false) {
+        this.qualityService.getBatch(event, this.statusModule()).subscribe(response => {
+          if(response.Code === 0) {
+            const {AbsEntryBatch, DistNumber, BinCode, AbsEntry, ItemCode, ItemName, Quantity, WhsCode, Status } = response.Data[0];
+            this.rowData.push({AbsEntryBatch: AbsEntryBatch, DistNumber: DistNumber, BinCode: BinCode, AbsEntry: AbsEntry, ItemCode: ItemCode, ItemName: ItemName, Quantity: Quantity, WhsCode: WhsCode, Status: Status });
+            this.gridApi.setRowData(this.rowData);
+            this.fieldLabel = '';
+          } else {
+            this.childSnak.openSnackBar(response.Message, 'Cerrar','warning-snackbar');
+            this.fieldLabel = '';
+          }
+        }, (err) => {
+            this.childSnak.openSnackBar(err.message, 'Cerrar','warning-snackbar');
+            this.fieldLabel = '';
+        });
+      } else {
+        // If set value '' execute very fast, not restart/reset value in HTML, review documentation
+        setTimeout( () => {
+          this.childSnak.openSnackBar('El lote ya fue leído', 'Cerrar','warning-snackbar');
+          this.fieldLabel = '';
+        }, 100);
+      }
+    }
+  }
+
+  handleRowDataChanged(event) {
+    const index = this.rowData.length - 1;
+    if (this.stayScrolledToEnd) {
+      this.gridApi.ensureIndexVisible(index, 'bottom');
+    }
+  }
+  
+  statusModule(): number {
+    let resultStatus = -2;
+    if(this.fieldMove.Locked && !this.fieldMove.Unlocked) {
+      resultStatus = 2
+    } else if (this.fieldMove.Unlocked && !this.fieldMove.Locked) {
+      resultStatus = 0;
+    }
+    return resultStatus;
+  }
+
+   // delete rows
+   onRemoveSelected() {
+    const selectedData = this.gridApi.getSelectedRows();
+
+    let temp = this.rowData.filter((element) => {
+      return selectedData.indexOf(element) < 0;
+    });
+
+    this.rowData = temp;
+    this.gridApi.applyTransaction({ remove: selectedData });
+    this.gridApi.applyTransaction({ update: this.rowData});
+
+  }
+
+  existCodebars(codebars: string) : boolean {
+    let result = false;
+    this.gridApi.forEachNode(node => {
+      if(node.data.DistNumber === codebars) result = true;
+    });
+    return result;
+  }
+
+  async onSubmit() {
+    this.loading = true;
+    const value = this.serviceLayer.sessionIsValid();
+    if(!value){
+        const session = await this.serviceLayer.doLoginSL().toPromise(); // return json
+    }
+
+    /* this.serviceLayer.doLoginSL().toPromise().then(response => {
+      if(response.SessionId) { */
+        if(this.isOnlyLocked()) { // Only locked batchs
+          this.onLockedOrRelease("bdsStatus_Locked").then(locked => {
+            if(locked > 0) {
+              this.childSnak.openSnackBar(`Lotes bloqueados: ${locked}`, 'Cerrar','success-snackbar');
+              this.onRestart();
+              this.loading = false;
+            } else {
+              this.childSnak.openSnackBar(`No se pudieron actualizar todos los lotes`, 'Cerrar','warning-snackbar');
+              this.loading = false;
+            }
+            /* this.logOutSL(); */
+          }).catch(err => {
+            this.childSnak.openSnackBar(`${err.error.error.message.value}`, 'Cerrar','warning-snackbar');
+            this.loading = false;
+          });
+        } else if (this.isOnlyRelease()) { // Only release (unlocked) batchs
+          this.onLockedOrRelease("bdsStatus_Released").then(release => {
+            if(release > 0){
+              this.childSnak.openSnackBar(`Lotes desbloqueados: ${release}`, 'Cerrar','success-snackbar');
+              this.onRestart();
+              this.loading = false;
+            } else {
+              this.childSnak.openSnackBar(`No se pudieron actualizar todos los lotes`, 'Cerrar','warning-snackbar');
+              this.loading = false;
+            }
+            /* this.logOutSL(); */
+          }).catch(err => {
+            this.childSnak.openSnackBar(`${err.error.error.message.value}`, 'Cerrar','warning-snackbar');
+            this.loading = false;
+          });
+        } else if (this.areBothMovements()) { // Both movements (locked and movement)
+          // this.onMovementLocked()
+        }
+      /* } */
+    /* }).catch( err => {
+      this.childSnak.openSnackBar(`${err.error.error.code} - ${err.error.error.message.value}`, 'Cerrar','warning-snackbar');
+      this.loading = false;
+    }); */
+  }
+
+  async onLockedOrRelease(newStatus: string) {
+    let rowsUpd = 0;
+    for(let i = 0; i < this.rowData.length; i++) {
+      await this.qualityService.doReleaseOrLocked(this.rowData[i].AbsEntryBatch, newStatus).toPromise()
+      rowsUpd++;
+    }
+    return rowsUpd;
+  }
+
+  logOutSL() {
+    console.log('function logout')
+    this.serviceLayer.doLogoutSL().toPromise().then(result => {
+      this.serviceLayer.deleteSession();
+    }).catch( err => {
+      console.error(err);
+    })
+  }
+
+  onMovementLocked() {
+    for (var index in this.rowData) {
+       const BinActionTypeFrom =  new binLocation(this.rowData[index].BinAbsEntry, 2, Number.parseInt(index), this.rowData[index].Quanity, Number.parseInt(index));
+       const BinActionTypeTo = new binLocation(this.rowData[index].BinAbsEntry, 2, Number.parseInt(index), this.rowData[index].Quanity, Number.parseInt(index));
+       const Batchs = new batchNumbers(this.rowData[index].DistNumber, this.rowData[index].WhsCode, this.rowData[index].Quantity, Number.parseInt(index));
+       const Lines = new transferLine(this.rowData[index].ItemCode, this.rowData[index].Quantity, this.fieldMove.WhsCode,this.rowData[index].WhsCode, [Batchs], [BinActionTypeFrom, BinActionTypeTo]);
+       const document = new transfer('Serie', new Date(), this.rowData[index].WhsCode, this.fieldMove.WhsCode, this.fieldMove.WhsCode,'HH', 'usuario', [Lines]);
+    }
+    this.qualityService.doTransfer(document).subscribe(response => {
+
+    }, (err) => {
+      console.error(err);
+    })
+  }
+
+  isOnlyLocked() : boolean {
+    if(this.fieldMove.Locked && !this.fieldMove.Unlocked && !this.fieldMove.Move)
+      return true;
+  }
+
+  isOnlyRelease(): boolean {
+    if(!this.fieldMove.Locked && this.fieldMove.Unlocked && !this.fieldMove.Move)
+      return true;
+  }
+
+  areBothMovements() {
+    if (this.fieldMove.Locked && !this.fieldMove.Unlocked && this.fieldMove.Move)
+      return true;
+  }
+
+  onClickReadManual() {
+    this.fieldLabel = '';
+    !this.readManual ? this.readManual = true : this.readManual = false;
+  }
+
+  addLabelManual() {
+    this.readCodebars(this.fieldLabel);
+  }
+
   onProcessRead() {
     this.processRead = true;
-    /* console.table(this.checkBox); */
   }
+  // Clear table
   onCancelProcessRead() {
     this.processRead = false;
+    this.gridApi.setRowData([]);
+    this.rowData = [];
   }
-  onChangeCheckBox(event) {
-    if(this.checkBox.bloq)
-      this.titleCard = 'Bloqueo';
-    else if (this.checkBox.desbloq)
-      this.titleCard = 'Desbloqueo';
-    else if (this.checkBox.bloq && this.checkBox.move)
-      this.titleCard = 'Bloqueo y Movimiento';
-    else if (this.checkBox.desbloq && this.checkBox.move)
-      this.titleCard = 'Desbloqueo y Movimiento';
+
+  onRestart() {
+    this.rowData = [];
+    this.gridApi.setRowData([]);
+  }
+
+  textLocked() {
+    this.fieldMove.Locked ? this.textActions = 'Bloqueo' : this.textActions = this.textActions.replace('Bloqueo','');
+    this.fieldMove.Unlocked = false;
+  }
+
+  textUnlocked() {
+    this.fieldMove.Unlocked ? this.textActions = 'Desbloqueo' : this.textActions = this.textActions.replace('Desbloqueo','');
+    this.fieldMove.Locked = false;
+  }
+
+  textMove() {
+    (this.fieldMove.Move) ? this.textActions += ' y Movimiento' : this.textActions = this.textActions.replace('y Movimiento','');
   }
 }
