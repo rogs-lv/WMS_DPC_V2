@@ -46,6 +46,18 @@ export class QualityService {
         );
     }
 
+    getDefaultLocation(warehouse: string): Observable<any> {
+        const header = new HttpHeaders()
+        .set('Authorization', this.auth.getToken());
+
+        const api = `${this.endpoint}quality/DefaultLocationWarehouse?warehouse=${warehouse}`;
+        return this.http.get(api, { headers: header }).pipe(
+          map( (response: response) => {
+              return response;
+          })
+        );
+    }
+
     doReleaseOrLocked(AbsEntry: number, newStatus: string): Observable<any> {
         const header = new HttpHeaders()
         .set('Content-Type', 'application/json');
@@ -71,7 +83,7 @@ export class QualityService {
         const header = new HttpHeaders()
         .set('Content-Type', 'application/json');
 
-        const api = `${this.endpoint}StockTransfers`;
+        const api = `${this.endpointSL}StockTransfers`;
         return this.http.post(
             api,
             document,

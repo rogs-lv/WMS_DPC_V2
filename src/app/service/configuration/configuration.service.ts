@@ -31,4 +31,15 @@ export class ConfigurationService {
           })
         );
     }
+
+    getSerieToDocument(warehouse: string): Observable<any> {
+        const header = new HttpHeaders()
+            .set('Authorization', this.auth.getToken());
+        const api = `${this.endpoint}Configuration/Serie?warehouse=${warehouse}`;
+        return this.http.get(api, { headers: header }).pipe(
+          map( (response: response) => {
+              return response;
+          })
+        );
+    }
 }  

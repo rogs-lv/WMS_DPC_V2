@@ -4,8 +4,8 @@ export class binLocation {
     BaseLineNumber: number;
     Quantity: number;
     SerialAndBatchNumbersBaseLine: number;
-
-    constructor(BinAbsEntry_: number, BinActionType_: number, BaseLineNumber_: number, Quantity_ : number, SerialAndBatchNumbersBaseLine_ : number){
+    
+    constructor(BinAbsEntry_: number, BinActionType_: number, BaseLineNumber_: number, Quantity_: number, SerialAndBatchNumbersBaseLine_: number){
         this.BinAbsEntry = BinAbsEntry_;
         this.BinActionType = BinActionType_;
         this.BaseLineNumber = BaseLineNumber_;
@@ -15,34 +15,60 @@ export class binLocation {
 }
 
 export class batchNumbers {
-    /* BatchNumber: string;
+    BatchNumber: string;
     Location: string;
     Quantity: number;
     BaseLineNumber: number;
- */
-    constructor(BatchNumber: string, Location: string, Quantity: number, BaseLineNumber: number){};
+    constructor(BatchNumber_: string, Location_: string, Quantity_: number, BaseLineNumber_: number) {
+        this.BatchNumber = BatchNumber_;
+        this.Location = Location_;
+        this.Quantity = Quantity_;
+        this.BaseLineNumber = BaseLineNumber_;
+    }
 }
 
 export class transferLine {
-    /* LineNum: number;
+    LineNum?: number;
     ItemCode: string;
-    Dscription: string;
+    Dscription?: string;
     Quantity: number; 
     WarehouseCode: string;
     FromWarehouseCode: string;
     BatchNumbers: batchNumbers[];
-    StockTransferLinesBinAllocations: binLocation[]; */
-    constructor(ItemCode: string, Quantity: number,  WarehouseCode: string, FromWarehouseCode: string, BatchNumbers: batchNumbers[], StockTransferLinesBinAllocations: binLocation[]) {}
+    StockTransferLinesBinAllocations: binLocation[];
+    constructor(ItemCode_: string, Quantity_: number,  WarehouseCode_: string, FromWarehouseCode_: string, BatchNumbers_: batchNumbers[], StockTransferLinesBinAllocations_: binLocation[], LineNum_?: number, Dscription_?: string) {
+        this.LineNum = LineNum_;
+        this.ItemCode = ItemCode_;
+        this.Dscription = Dscription_;
+        this.Quantity =  Quantity_;
+        this.WarehouseCode = WarehouseCode_;
+        this.FromWarehouseCode = FromWarehouseCode_;
+        this.BatchNumbers = BatchNumbers_;
+        this.StockTransferLinesBinAllocations = StockTransferLinesBinAllocations_;
+    }
 }
 
 export class transfer {
-    /* Series: string;
-    DocDate: Date;
+    Series?: number;
+    DocDate: string;
     FromWarehouse: string;
     ToWarehouse: string;
-    U_Destino: string;
+    U_Destino?: string;
     U_OrigenMov: string;
     U_UsrHH: string;
-    StockTransferLines: transferLine[]; */
-    constructor(Series: string, DocDate: Date, FromWarehouse: string, ToWarehouse: string, U_Destino: string, U_OrigenMov: string, U_UsrHH: string, StockTransferLines: transferLine[]){}
+    U_FechaMov: string;
+    U_HoraMov: string;
+    StockTransferLines: transferLine[];
+    constructor(DocDate_: string, FromWarehouse_: string, ToWarehouse_: string, U_OrigenMov_: string, U_UsrHH_: string, StockTransferLines_: transferLine[], U_FechaMov_: string, U_HoraMov_: string, Serie_?: number,  U_Destino_?: string) {
+        this.Series = Serie_;
+        this.DocDate = DocDate_;
+        this.FromWarehouse = FromWarehouse_;
+        this.ToWarehouse = ToWarehouse_;
+        this.U_Destino = U_Destino_;
+        this.U_OrigenMov = U_OrigenMov_;
+        this.U_UsrHH = U_UsrHH_;
+        this.U_FechaMov = U_FechaMov_;
+        this.U_HoraMov = U_HoraMov_;
+        this.StockTransferLines = StockTransferLines_;
+    }
 }

@@ -6,6 +6,9 @@ import { QualityService } from 'src/app/service/quality/quality.service';
 import { ServiceLayer } from 'src/app/service/shared/ServicesLayer.service';
 import { SnakbarComponent } from '../shared/snakbar/snakbar.component';
 import { binLocation, transfer, batchNumbers, transferLine } from '../../models/transfer';
+import { AuthService } from 'src/app/service/authentication/auth.service';
+import { map } from 'rxjs/operators';
+import { ConfigurationService } from 'src/app/service/configuration/configuration.service';
 @Component({
   selector: 'app-quality',
   templateUrl: './quality.component.html',
@@ -38,7 +41,9 @@ export class QualityComponent implements OnInit {
   
   constructor(
     private qualityService: QualityService,
-    private serviceLayer: ServiceLayer
+    private serviceLayer: ServiceLayer,
+    private configService: ConfigurationService,
+    private auth: AuthService
   ) { 
     this.fieldMove = new fieldAction;
     this.linesQuantity = [];
@@ -138,46 +143,39 @@ export class QualityComponent implements OnInit {
         const session = await this.serviceLayer.doLoginSL().toPromise(); // return json
     }
 
-    /* this.serviceLayer.doLoginSL().toPromise().then(response => {
-      if(response.SessionId) { */
-        if(this.isOnlyLocked()) { // Only locked batchs
-          this.onLockedOrRelease("bdsStatus_Locked").then(locked => {
-            if(locked > 0) {
-              this.childSnak.openSnackBar(`Lotes bloqueados: ${locked}`, 'Cerrar','success-snackbar');
-              this.onRestart();
-              this.loading = false;
-            } else {
-              this.childSnak.openSnackBar(`No se pudieron actualizar todos los lotes`, 'Cerrar','warning-snackbar');
-              this.loading = false;
-            }
-            /* this.logOutSL(); */
-          }).catch(err => {
-            this.childSnak.openSnackBar(`${err.error.error.message.value}`, 'Cerrar','warning-snackbar');
-            this.loading = false;
-          });
-        } else if (this.isOnlyRelease()) { // Only release (unlocked) batchs
-          this.onLockedOrRelease("bdsStatus_Released").then(release => {
-            if(release > 0){
-              this.childSnak.openSnackBar(`Lotes desbloqueados: ${release}`, 'Cerrar','success-snackbar');
-              this.onRestart();
-              this.loading = false;
-            } else {
-              this.childSnak.openSnackBar(`No se pudieron actualizar todos los lotes`, 'Cerrar','warning-snackbar');
-              this.loading = false;
-            }
-            /* this.logOutSL(); */
-          }).catch(err => {
-            this.childSnak.openSnackBar(`${err.error.error.message.value}`, 'Cerrar','warning-snackbar');
-            this.loading = false;
-          });
-        } else if (this.areBothMovements()) { // Both movements (locked and movement)
-          // this.onMovementLocked()
+    if(this.isOnlyLocked()) { // Only locked batchs
+      this.onLockedOrRelease("bdsStatus_Locked").then(locked => {
+        if(locked > 0) {
+          this.childSnak.openSnackBar(`Lotes bloqueados: ${locked}`, 'Cerrar','success-snackbar');
+          this.onRestart();
+          this.loading = false;
+        } else {
+          this.childSnak.openSnackBar(`No se pudieron actualizar todos los lotes`, 'Cerrar','warning-snackbar');
+          this.loading = false;
         }
-      /* } */
-    /* }).catch( err => {
-      this.childSnak.openSnackBar(`${err.error.error.code} - ${err.error.error.message.value}`, 'Cerrar','warning-snackbar');
-      this.loading = false;
-    }); */
+        /* this.logOutSL(); */
+      }).catch(err => {
+        this.childSnak.openSnackBar(`${err.error.error.message.value}`, 'Cerrar','warning-snackbar');
+        this.loading = false;
+      });
+    } else if (this.isOnlyRelease()) { // Only release (unlocked) batchs
+      this.onLockedOrRelease("bdsStatus_Released").then(release => {
+        if(release > 0){
+          this.childSnak.openSnackBar(`Lotes desbloqueados: ${release}`, 'Cerrar','success-snackbar');
+          this.onRestart();
+          this.loading = false;
+        } else {
+          this.childSnak.openSnackBar(`No se pudieron actualizar todos los lotes`, 'Cerrar','warning-snackbar');
+          this.loading = false;
+        }
+        /* this.logOutSL(); */
+      }).catch(err => {
+        this.childSnak.openSnackBar(`${err.error.error.message.value}`, 'Cerrar','warning-snackbar');
+        this.loading = false;
+      });
+    } else if (this.areBothMovements()) { // Both movements (locked and movement)
+      this.onMovementLocked();
+    }
   }
 
   async onLockedOrRelease(newStatus: string) {
@@ -189,28 +187,65 @@ export class QualityComponent implements OnInit {
     return rowsUpd;
   }
 
-  logOutSL() {
-    console.log('function logout')
+  /* logOutSL() {
     this.serviceLayer.doLogoutSL().toPromise().then(result => {
       this.serviceLayer.deleteSession();
     }).catch( err => {
       console.error(err);
     })
-  }
+  } */
+  //First move, after locked
+  async onMovementLocked() {
+    let documentLines: transferLine[];
+    documentLines = [];
+    const {IdUser, WhsCode} = this.auth.getDataToken();
+    //Get serie with endpoint Configuration - API Rest
+    const { Data: serie} = await  this.configService.getSerieToDocument(WhsCode).toPromise().catch( err => {
+      this.childSnak.openSnackBar('No ser recupero número de serie', 'Cerrar','error-snackbar');
+    });
+    //Get AbsEntry of Warehouse for bin location, otherwise not add location
+    const { Data: defaultBin} = await this.qualityService.getDefaultLocation(this.fieldMove.WhsCode).toPromise().catch( err => {
+      this.childSnak.openSnackBar('No ser recupero ubicación destino', 'Cerrar','error-snackbar');
+    });
+    
+    for (let i = 0; i < this.rowData.length; i++) {
+      const data = this.rowData[i];
+      const BinFrom =  new binLocation(data.AbsEntry, 2, i, data.Quantity, 0);
+      let BinTo;
+      if(defaultBin.DftBinAbs > 0)
+        BinTo = new binLocation(defaultBin.DftBinAbs, 1, i, data.Quantity, 0);
+      const Batchs = new batchNumbers(data.DistNumber, data.WhsCode, data.Quantity, i);
+      let Lines;
+      if(defaultBin.DftBinAbs > 0)
+        Lines = new transferLine(data.ItemCode, data.Quantity, this.fieldMove.WhsCode, data.WhsCode, [Batchs], [BinFrom, BinTo]);
+      else
+        Lines = new transferLine(data.ItemCode, data.Quantity, this.fieldMove.WhsCode, data.WhsCode, [Batchs], [BinFrom]);
 
-  onMovementLocked() {
-    for (var index in this.rowData) {
-       const BinActionTypeFrom =  new binLocation(this.rowData[index].BinAbsEntry, 2, Number.parseInt(index), this.rowData[index].Quanity, Number.parseInt(index));
-       const BinActionTypeTo = new binLocation(this.rowData[index].BinAbsEntry, 2, Number.parseInt(index), this.rowData[index].Quanity, Number.parseInt(index));
-       const Batchs = new batchNumbers(this.rowData[index].DistNumber, this.rowData[index].WhsCode, this.rowData[index].Quantity, Number.parseInt(index));
-       const Lines = new transferLine(this.rowData[index].ItemCode, this.rowData[index].Quantity, this.fieldMove.WhsCode,this.rowData[index].WhsCode, [Batchs], [BinActionTypeFrom, BinActionTypeTo]);
-       const document = new transfer('Serie', new Date(), this.rowData[index].WhsCode, this.fieldMove.WhsCode, this.fieldMove.WhsCode,'HH', 'usuario', [Lines]);
+      documentLines.push(Lines);
     }
-    this.qualityService.doTransfer(document).subscribe(response => {
-
-    }, (err) => {
-      console.error(err);
-    })
+    const date = new Date();
+    const dateDocument = `${date.getFullYear()}-${("0" + (date.getMonth() + 1)).slice(-2)}-${("0" + date.getDate()).slice(-2)}`;
+    const hourDocument = `${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}`;
+    let document = new transfer(dateDocument, this.rowData[0].WhsCode, this.fieldMove.WhsCode, 'HH', IdUser, documentLines, dateDocument, hourDocument, serie);
+    //console.log(document);
+    this.qualityService.doTransfer(document).toPromise().then(result => {
+      //console.log(result)
+      if(result.DocEntry) {
+        this.onLockedOrRelease("bdsStatus_Locked").then(locked => {
+          if(locked > 0) {
+            this.onRestart();
+            this.loading = false;
+          } else {
+            this.loading = false;
+          }
+        }).catch(err => {
+          this.childSnak.openSnackBar(`${err.error.error.message.value}`, 'Cerrar','warning-snackbar');
+          this.loading = false;
+        });
+      }
+    }).catch(err => {
+      this.childSnak.openSnackBar(`${err.error.error.message.value}`, 'Cerrar','warning-snackbar');
+    });
   }
 
   isOnlyLocked() : boolean {
@@ -245,6 +280,7 @@ export class QualityComponent implements OnInit {
     this.processRead = false;
     this.gridApi.setRowData([]);
     this.rowData = [];
+    this.fieldMove = new fieldAction;
   }
 
   onRestart() {
@@ -260,6 +296,7 @@ export class QualityComponent implements OnInit {
   textUnlocked() {
     this.fieldMove.Unlocked ? this.textActions = 'Desbloqueo' : this.textActions = this.textActions.replace('Desbloqueo','');
     this.fieldMove.Locked = false;
+    this.fieldMove.Move = false;
   }
 
   textMove() {
