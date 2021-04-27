@@ -9,6 +9,7 @@ import { MatListModule, MatExpansionModule } from '@angular/material';
 import {MatMenuModule} from '@angular/material/menu'; 
 import {MatCardModule} from '@angular/material/card'; 
 import {MatSnackBarModule} from '@angular/material/snack-bar'; 
+import {MatDialogModule} from '@angular/material/dialog';
 @NgModule({
     declarations: [],
     imports: [ 
@@ -21,7 +22,8 @@ import {MatSnackBarModule} from '@angular/material/snack-bar';
         MatExpansionModule,
         MatMenuModule,
         MatCardModule,
-        MatSnackBarModule
+        MatSnackBarModule,
+        MatDialogModule
     ],
     exports: [
         MatSidenavModule,
@@ -32,7 +34,8 @@ import {MatSnackBarModule} from '@angular/material/snack-bar';
         MatExpansionModule, 
         MatMenuModule,
         MatCardModule,
-        MatSnackBarModule
+        MatSnackBarModule,
+        MatDialogModule
     ],
     providers: [],
 })

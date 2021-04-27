@@ -31,6 +31,7 @@ import { FilterModulePipe } from './pipes/filter-module.pipe';
 import { FilterSubmodulePipe } from './pipes/filter-submodule.pipe';
 import { FilterTableUsersPipe } from './pipes/filter-table-users.pipe';
 import { PageNotFoundComponent } from './components/shared/page-not-found/page-not-found.component';
+import { DialogConfirmComponent } from './components/shared/dialog-confirm/dialog-confirm.component';
 
 @NgModule({
   declarations: [
@@ -56,7 +57,8 @@ import { PageNotFoundComponent } from './components/shared/page-not-found/page-n
     FilterModulePipe,
     FilterSubmodulePipe,
     FilterTableUsersPipe,
-    PageNotFoundComponent
+    PageNotFoundComponent,
+    DialogConfirmComponent
   ],
   imports: [
     BrowserModule,
@@ -68,6 +70,7 @@ import { PageNotFoundComponent } from './components/shared/page-not-found/page-n
     HttpClientModule,
     AgGridModule.withComponents([])
   ],
+  entryComponents: [FolioComponent, DialogConfirmComponent],
   providers: [],
   bootstrap: [AppComponent]
 })

@@ -1,0 +1,8 @@
+<h1 mat-dialog-title style="color: red">Mensaje de sistema</h1>
+<div mat-dialog-content>
+    <h5>Se ha detectado un archivo con el rack actual seleccionado. <br />¿Desea reemplazar?</h5>
+</div>
+<div mat-dialog-actions>
+    <button mat-button (click)="onNoClick()" style="color: red">No</button>
+    <button mat-button (click)="onYesClick()" cdkFocusInitial style="color: green">Confirmar</button>
+</div>
