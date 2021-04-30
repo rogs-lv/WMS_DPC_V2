@@ -9,7 +9,6 @@ import { MatDialogRef, MAT_DIALOG_DATA} from '@angular/material/dialog';
 })
 export class DialogConfirmComponent implements OnInit {
   closeMessage: string = "";  
-  
 
   constructor(
     public dialogRef: MatDialogRef<DialogConfirmComponent>) { }

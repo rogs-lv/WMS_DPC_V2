@@ -32,6 +32,8 @@ import { FilterSubmodulePipe } from './pipes/filter-submodule.pipe';
 import { FilterTableUsersPipe } from './pipes/filter-table-users.pipe';
 import { PageNotFoundComponent } from './components/shared/page-not-found/page-not-found.component';
 import { DialogConfirmComponent } from './components/shared/dialog-confirm/dialog-confirm.component';
+import { LocationBatchComponent } from './components/inventory/dialog/location-batch/location-batch.component';
+import { ChangeWhsComponent } from './components/inventory/dialog/change-whs/change-whs.component';
 
 @NgModule({
   declarations: [
@@ -58,7 +60,9 @@ import { DialogConfirmComponent } from './components/shared/dialog-confirm/dialo
     FilterSubmodulePipe,
     FilterTableUsersPipe,
     PageNotFoundComponent,
-    DialogConfirmComponent
+    DialogConfirmComponent,
+    LocationBatchComponent,
+    ChangeWhsComponent
   ],
   imports: [
     BrowserModule,
@@ -70,7 +74,7 @@ import { DialogConfirmComponent } from './components/shared/dialog-confirm/dialo
     HttpClientModule,
     AgGridModule.withComponents([])
   ],
-  entryComponents: [FolioComponent, DialogConfirmComponent],
+  entryComponents: [FolioComponent, DialogConfirmComponent, InventoryComponent, LocationBatchComponent, ChangeWhsComponent],
   providers: [],
   bootstrap: [AppComponent]
 })
