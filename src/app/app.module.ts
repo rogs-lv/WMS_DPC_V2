@@ -34,6 +34,8 @@ import { PageNotFoundComponent } from './components/shared/page-not-found/page-n
 import { DialogConfirmComponent } from './components/shared/dialog-confirm/dialog-confirm.component';
 import { LocationBatchComponent } from './components/inventory/dialog/location-batch/location-batch.component';
 import { ChangeWhsComponent } from './components/inventory/dialog/change-whs/change-whs.component';
+import { DialogLocationComponent } from './components/transfer/dialog/dialog-location/dialog-location.component';
+import { SuggestedComponent } from './components/transfer/dialog/suggested/suggested.component';
 
 @NgModule({
   declarations: [
@@ -62,7 +64,9 @@ import { ChangeWhsComponent } from './components/inventory/dialog/change-whs/cha
     PageNotFoundComponent,
     DialogConfirmComponent,
     LocationBatchComponent,
-    ChangeWhsComponent
+    ChangeWhsComponent,
+    DialogLocationComponent,
+    SuggestedComponent
   ],
   imports: [
     BrowserModule,
@@ -74,7 +78,7 @@ import { ChangeWhsComponent } from './components/inventory/dialog/change-whs/cha
     HttpClientModule,
     AgGridModule.withComponents([])
   ],
-  entryComponents: [FolioComponent, DialogConfirmComponent, InventoryComponent, LocationBatchComponent, ChangeWhsComponent],
+  entryComponents: [FolioComponent, DialogConfirmComponent, InventoryComponent, LocationBatchComponent, ChangeWhsComponent, DialogLocationComponent, MoveComponent, SuggestedComponent],
   providers: [],
   bootstrap: [AppComponent]
 })
