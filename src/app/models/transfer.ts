@@ -1,3 +1,5 @@
+import { batch } from "./batch";
+
 export class binLocation {
     BinAbsEntry: number;
     BinActionType: number;
@@ -26,7 +28,6 @@ export class batchNumbers {
         this.BaseLineNumber = BaseLineNumber_;
     }
 }
-
 export class transferLine {
     LineNum?: number;
     ItemCode: string;
@@ -34,9 +35,12 @@ export class transferLine {
     Quantity: number; 
     WarehouseCode: string;
     FromWarehouseCode: string;
+    BaseType?: string;
+    BaseLine?: number;
+    BaseEntry?: number;
     BatchNumbers: batchNumbers[];
     StockTransferLinesBinAllocations: binLocation[];
-    constructor(ItemCode_: string, Quantity_: number,  WarehouseCode_: string, FromWarehouseCode_: string, BatchNumbers_: batchNumbers[], StockTransferLinesBinAllocations_: binLocation[], LineNum_?: number, Dscription_?: string) {
+    constructor(ItemCode_: string, Quantity_: number,  WarehouseCode_: string, FromWarehouseCode_: string, BatchNumbers_: batchNumbers[], StockTransferLinesBinAllocations_: binLocation[], LineNum_?: number, Dscription_?: string, BaseType_?: string, BaseLine_?: number, BaseEntry_?: number) {
         this.LineNum = LineNum_;
         this.ItemCode = ItemCode_;
         this.Dscription = Dscription_;
@@ -44,10 +48,12 @@ export class transferLine {
         this.WarehouseCode = WarehouseCode_;
         this.FromWarehouseCode = FromWarehouseCode_;
         this.BatchNumbers = BatchNumbers_;
+        this.BaseType = BaseType_;
+        this.BaseLine = BaseLine_;
+        this.BaseEntry = BaseEntry_;
         this.StockTransferLinesBinAllocations = StockTransferLinesBinAllocations_;
     }
 }
-
 export class transfer {
     Series?: number;
     DocDate: string;
@@ -71,4 +77,37 @@ export class transfer {
         this.U_HoraMov = U_HoraMov_;
         this.StockTransferLines = StockTransferLines_;
     }
+}
+// Transfer request
+export class OpenTransferRequest
+{
+    DocEntry: number;
+    DocNum: number;
+    DocDate: string;
+    Filler: string;
+    ToWhsCode: string;
+}
+export class TransferRequest
+{
+    DocEntry: number;
+    DocNum: number;
+    U_OF: number;
+    Filler: string;
+    ToWhsCode: string;
+}
+export class DetailTransferRequest
+{
+    LineNum: number;
+    ItemCode: string;
+    Quantity: number;
+}
+export class DocumentTransfer
+{
+    Document: TransferRequest;
+    Detail: DetailTransferRequest[];
+}
+
+export class DataMovement {
+    batchs: batch[];
+    request: DocumentTransfer;
 }

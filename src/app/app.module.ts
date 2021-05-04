@@ -36,7 +36,7 @@ import { LocationBatchComponent } from './components/inventory/dialog/location-b
 import { ChangeWhsComponent } from './components/inventory/dialog/change-whs/change-whs.component';
 import { DialogLocationComponent } from './components/transfer/dialog/dialog-location/dialog-location.component';
 import { SuggestedComponent } from './components/transfer/dialog/suggested/suggested.component';
-
+import { OpenRequestComponent } from './components/transfer/dialog/open-request/open-request.component';
 @NgModule({
   declarations: [
     AppComponent,
@@ -66,7 +66,8 @@ import { SuggestedComponent } from './components/transfer/dialog/suggested/sugge
     LocationBatchComponent,
     ChangeWhsComponent,
     DialogLocationComponent,
-    SuggestedComponent
+    SuggestedComponent,
+    OpenRequestComponent
   ],
   imports: [
     BrowserModule,
@@ -78,7 +79,7 @@ import { SuggestedComponent } from './components/transfer/dialog/suggested/sugge
     HttpClientModule,
     AgGridModule.withComponents([])
   ],
-  entryComponents: [FolioComponent, DialogConfirmComponent, InventoryComponent, LocationBatchComponent, ChangeWhsComponent, DialogLocationComponent, MoveComponent, SuggestedComponent],
+  entryComponents: [FolioComponent, DialogConfirmComponent, InventoryComponent, LocationBatchComponent, ChangeWhsComponent, DialogLocationComponent, MoveComponent, SuggestedComponent, RequestComponent, OpenRequestComponent],
   providers: [],
   bootstrap: [AppComponent]
 })

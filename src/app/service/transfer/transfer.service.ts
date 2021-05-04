@@ -7,7 +7,8 @@ import { map } from 'rxjs/operators';
 import { response } from 'src/app/interfaces/response.interface';
 import { ServiceLayer } from '../shared/ServicesLayer.service';
 import { warehouse } from 'src/app/models/warehouse';
-import { transfer } from 'src/app/models/transfer';
+import { DataMovement, transfer } from 'src/app/models/transfer';
+import { DocumentTransfer } from '../../models/transfer';
 
 
 @Injectable({
@@ -24,7 +25,7 @@ export class TransferService {
         private http: HttpClient
     ) {
     }
-    
+    //#region "location movement"
     viewLocation(location: string, warehouseUser: string): Observable<any> {
         const header = new HttpHeaders()
             .set('Authorization', this.auth.getToken());
@@ -60,7 +61,33 @@ export class TransferService {
           })
         );
     }
+    //#endregion "location movement"
+    //#region "transfer request"
+    openTransfersRequests(warehouseUser: string): Observable<any> {
+        const header = new HttpHeaders()
+            .set('Authorization', this.auth.getToken());
+        
+        const api = `${this.endpoint}transfer/OpenTransferRequest?warehouseUser=${warehouseUser}`;
+        return this.http.get(api, { headers: header }).pipe(
+          map( (response: response) => {
+              return response;
+          })
+        );
+    }
 
+    getDocumentsRequests(warehouseUser: string, numberDocument: number): Observable<any> {
+        const header = new HttpHeaders()
+            .set('Authorization', this.auth.getToken());
+        
+        const api = `${this.endpoint}transfer/GetDocumentRequest?warehouseUser=${warehouseUser}&numberDocument=${numberDocument}`;
+        return this.http.get(api, { headers: header }).pipe(
+          map( (response: response) => {
+              return response;
+          })
+        );
+    }
+    //#endregion "transfer request"
+    //#region "Common"
     getBatch(codebars: string, warehouseUser: string): Observable<any> {
         const header = new HttpHeaders()
             .set('Authorization', this.auth.getToken());
@@ -70,6 +97,37 @@ export class TransferService {
           map( (response: response) => {
               return response;
           })
+        );
+    }
+
+    getLocationWhs(warehouse: string): Observable<any> {
+        const header = new HttpHeaders()
+            .set('Authorization', this.auth.getToken());
+        
+        const api = `${this.endpoint}transfer/LocationWarehouse?warehouse=${warehouse}`;
+        return this.http.get(api, { headers: header }).pipe(
+          map( (response: response) => {
+              return response;
+          })
+        );
+    }
+
+    processData(data: DataMovement) {
+        const header = new HttpHeaders()
+        .set('Content-Type', 'application/json')
+        .set('Authorization', this.auth.getToken());
+
+        const api = `${this.endpoint}transfer/ProcessMovement`;
+        return this.http.post(
+            api,
+            data,
+            { 
+                headers: header
+            },
+        ).pipe(
+            map((response: any) => {
+                return response;
+            })
         );
     }
 
@@ -91,6 +149,6 @@ export class TransferService {
             })
         );
     }
-
+    //#endregion "Common"
     
 }

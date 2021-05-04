@@ -1,4 +1,5 @@
 export class batch {
+    AbsEntryBatch?: number
     DistNumber: string;
     BinCode: string;
     AbsEntry: string;
