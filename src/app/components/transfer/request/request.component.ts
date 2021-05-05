@@ -7,8 +7,6 @@ import { SnakbarComponent } from '../../shared/snakbar/snakbar.component';
 import { batchNumbers, binLocation, DataMovement, DocumentTransfer, transfer, transferLine } from '../../../models/transfer';
 import { MatDialog } from '@angular/material';
 import { OpenRequestComponent } from '../dialog/open-request/open-request.component';
-import { environment } from 'src/environments/environment';
-import { batch } from '../../../models/batch';
 
 @Component({
   selector: 'app-request',
@@ -17,7 +15,7 @@ import { batch } from '../../../models/batch';
 })
 export class RequestComponent implements OnInit {
   @ViewChild(SnakbarComponent, {static: true}) childSnak: SnakbarComponent;
-  dataRequest = environment.dataForRequests;
+  /* dataRequest = environment.dataForRequests; */
 
   rowData =[];
   private gridApi;
@@ -69,12 +67,12 @@ export class RequestComponent implements OnInit {
       this.childSnak.openSnackBar('No ser recupero número de serie', 'Cerrar','warning-snackbar');
     });
     
-    let whsAbsEntry;
+   /*  let whsAbsEntry;
     if(this.memoryDocument.Document.ToWhsCode === this.dataRequest.WhsForRequest) {
        whsAbsEntry = await this.transferService.getLocationWhs(this.memoryDocument.Document.ToWhsCode).toPromise().catch(err => {
         this.childSnak.openSnackBar('Error al recuperar ubicación destino', 'Cerrar','warning-snackbar');
       });
-    }
+    } */
 
     let data: DataMovement;
     data = new DataMovement();
@@ -93,7 +91,7 @@ export class RequestComponent implements OnInit {
       response.Data.U_UsrHH = IdUser;
       this.transferService.createTransfer(response.Data).subscribe(result => {
         if(result.DocEntry) {
-          this.childSnak.openSnackBar(`Transferencia generada: ${result.DocEntry}`,'Cerrar','success-snackbar');
+          this.childSnak.openSnackBar(`Transferencia generada: ${result.DocNum}`,'Cerrar','success-snackbar');
           this.loading = false;
           this.onReset();
         }

@@ -7,7 +7,7 @@ import { map } from 'rxjs/operators';
 import { response } from 'src/app/interfaces/response.interface';
 import { ServiceLayer } from '../shared/ServicesLayer.service';
 import { warehouse } from 'src/app/models/warehouse';
-import { DataMovement, transfer } from 'src/app/models/transfer';
+import { DataMovement, DataReceipt, transfer } from 'src/app/models/transfer';
 import { DocumentTransfer } from '../../models/transfer';
 
 
@@ -87,6 +87,37 @@ export class TransferService {
         );
     }
     //#endregion "transfer request"
+    //#region "transfer receipt"
+    getDocumentsReceipt(warehouseUser: string, numberDocument: number): Observable<any> {
+        const header = new HttpHeaders()
+            .set('Authorization', this.auth.getToken());
+        
+        const api = `${this.endpoint}transfer/TransferReceipt?warehouse=${warehouseUser}&docNum=${numberDocument}`;
+        return this.http.get(api, { headers: header }).pipe(
+          map( (response: response) => {
+              return response;
+          })
+        );
+    }
+    processReceipt(data: DataReceipt) {
+        const header = new HttpHeaders()
+        .set('Content-Type', 'application/json')
+        .set('Authorization', this.auth.getToken());
+
+        const api = `${this.endpoint}transfer/ProcessReceipt`;
+        return this.http.post(
+            api,
+            data,
+            { 
+                headers: header
+            },
+        ).pipe(
+            map((response: any) => {
+                return response;
+            })
+        );
+    }
+    //#endregion "transfer receipt"
     //#region "Common"
     getBatch(codebars: string, warehouseUser: string): Observable<any> {
         const header = new HttpHeaders()
@@ -150,5 +181,4 @@ export class TransferService {
         );
     }
     //#endregion "Common"
-    
 }

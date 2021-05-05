@@ -111,3 +111,29 @@ export class DataMovement {
     batchs: batch[];
     request: DocumentTransfer;
 }
+
+export class TransferReceipt
+{
+    DocEntry: number;
+    DocNum: number;
+    DocDate: string;
+    Filler: string;
+    ToWhsCode: string;
+    U_Destino: string;
+}
+export class DetailTransferReceipt
+{
+    LineNum: number;
+    ItemCode: string;
+    Quantity: number;
+}
+export class DocumentTransferReceipt
+{
+    Document: TransferReceipt;
+    DetailDocument: DetailTransferReceipt[];
+}
+
+export class DataReceipt {
+    batchs: batch[];
+    receipt: DocumentTransferReceipt;
+}
