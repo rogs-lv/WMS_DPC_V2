@@ -1,4 +1,5 @@
 import { batch } from "./batch";
+import { warehouse } from "./warehouse";
 
 export class binLocation {
     BinAbsEntry: number;
@@ -136,4 +137,16 @@ export class DocumentTransferReceipt
 export class DataReceipt {
     batchs: batch[];
     receipt: DocumentTransferReceipt;
+}
+
+export class ManualToWhsCode {
+    toWhsCode: string;
+    toBinLocation: string;
+    listWhsCode: warehouse[];
+    listLocations: any[];
+}
+
+export class DataManual {
+    batchs: batch[];
+    manual: ManualToWhsCode;
 }

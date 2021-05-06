@@ -7,7 +7,7 @@ import { map } from 'rxjs/operators';
 import { response } from 'src/app/interfaces/response.interface';
 import { ServiceLayer } from '../shared/ServicesLayer.service';
 import { warehouse } from 'src/app/models/warehouse';
-import { DataMovement, DataReceipt, transfer } from 'src/app/models/transfer';
+import { DataManual, DataMovement, DataReceipt, transfer } from 'src/app/models/transfer';
 import { DocumentTransfer } from '../../models/transfer';
 
 
@@ -118,6 +118,48 @@ export class TransferService {
         );
     }
     //#endregion "transfer receipt"
+    //#region "transfer manual"
+    getListWarehouse(warehouseUser: string): Observable<any> {
+        const header = new HttpHeaders()
+            .set('Authorization', this.auth.getToken());
+        
+        const api = `${this.endpoint}transfer/ListWarehouse?warehouse=${warehouseUser}`;
+        return this.http.get(api, { headers: header }).pipe(
+          map( (response: response) => {
+              return response;
+          })
+        );
+    }
+    getListWarehousePiso(warehouse: string): Observable<any> {
+        const header = new HttpHeaders()
+            .set('Authorization', this.auth.getToken());
+        
+        const api = `${this.endpoint}transfer/ListWarehousePiso?warehouse=${warehouse}`;
+        return this.http.get(api, { headers: header }).pipe(
+          map( (response: response) => {
+              return response;
+          })
+        );
+    }
+    processManual(data: DataManual) {
+        const header = new HttpHeaders()
+        .set('Content-Type', 'application/json')
+        .set('Authorization', this.auth.getToken());
+
+        const api = `${this.endpoint}transfer/ProcessManual`;
+        return this.http.post(
+            api,
+            data,
+            { 
+                headers: header
+            },
+        ).pipe(
+            map((response: any) => {
+                return response;
+            })
+        );
+    }
+    //#endregion "transfer manual"
     //#region "Common"
     getBatch(codebars: string, warehouseUser: string): Observable<any> {
         const header = new HttpHeaders()
