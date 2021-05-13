@@ -19,3 +19,31 @@ export class documentship {
     OC: string;
     GR: string;
 }
+
+export class shipmentProcess {
+    DistNumber: string;
+    BinCode: string;
+    AbsEntry: number;
+    AbsEntryT: number;
+    ItemCode: string;
+    Quantity: number;
+    FromWhsCode: string;
+    ToWhsCode: string;
+    U_stFolio: string;
+    DocNum: number;
+    DocEntry: number;
+    LineNum: number;
+    OC: string;
+    GR: string;
+}
+
+export class shipmentSAP {
+    DocEntry: number;
+    DocNum: number;
+    Error: string;
+    constructor (docEntry: number, docNum: number, error_?: string) {
+        this.DocEntry = docEntry;
+        this.DocNum = docNum;
+        this.Error = error_;
+    }
+}

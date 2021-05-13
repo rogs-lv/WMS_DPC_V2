@@ -7,6 +7,8 @@ import { map } from 'rxjs/operators';
 import { response } from 'src/app/interfaces/response.interface';
 import { ServiceLayer } from '../shared/ServicesLayer.service';
 import { shippingDocument } from 'src/app/models/shipping';
+import { shipmentProcess } from 'src/app/models/shipment';
+import { transferShipment } from 'src/app/models/transfer';
 
 @Injectable({
     providedIn: 'root'
@@ -81,6 +83,25 @@ export class ShipmentService {
         );
     }
 
+    processShipmentEFFEM(data: shipmentProcess[]) {
+        const header = new HttpHeaders()
+        .set('Content-Type', 'application/json')
+        .set('Authorization', this.auth.getToken());
+
+        const api = `${this.endpoint}shipment/ProcessShipment`;
+        return this.http.post(
+            api,
+            data,
+            { 
+                headers: header
+            },
+        ).pipe(
+            map((response: any) => {
+                return response;
+            })
+        );
+    }
+
     updateBatchs(batchs: string[], status: string, docnum: number, docentry: number) {
         const header = new HttpHeaders()
         .set('Authorization', this.auth.getToken())
@@ -105,6 +126,25 @@ export class ShipmentService {
         .set('Content-Type', 'application/json');
 
         const api = `${this.endpointSL}InventoryTransferRequests`;
+        return this.http.post(
+            api,
+            document,
+            { 
+                headers: header,
+                withCredentials: true
+            },
+        ).pipe(
+            map((response: any) => {
+                return response;
+            })
+        );
+    }
+    
+    createTransfer(document: transferShipment): Observable<any> {
+        const header = new HttpHeaders()
+        .set('Content-Type', 'application/json');
+
+        const api = `${this.endpointSL}StockTransfers`;
         return this.http.post(
             api,
             document,

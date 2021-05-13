@@ -1,5 +1,5 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { documentship } from 'src/app/models/shipment';
+import { documentship, shipmentProcess, shipmentSAP } from 'src/app/models/shipment';
 import { BusnessPartner, shippingDocument, shippingLines } from 'src/app/models/shipping';
 import { AuthService } from 'src/app/service/authentication/auth.service';
 import { ConfigurationService } from 'src/app/service/configuration/configuration.service';
@@ -8,6 +8,8 @@ import { ShipmentService } from 'src/app/service/shipment/shipment.service';
 import { SnakbarComponent } from '../shared/snakbar/snakbar.component';
 import { batch } from '../../models/batch';
 import { ShippingService } from 'src/app/service/shipping/shipping.service';
+import { map } from 'rxjs/operators';
+import { transferShipment } from 'src/app/models/transfer';
 
 @Component({
   selector: 'app-shipment',
@@ -66,7 +68,7 @@ export class ShipmentComponent implements OnInit {
     if(!this.isEFEEM) { // NOT EFFEM
       this.buildDocumentNotEFFEM();
     } else { // EFFEM
-
+      this.buildDocumentEFFEM();
     }
   }
 
@@ -102,8 +104,55 @@ export class ShipmentComponent implements OnInit {
     });
   }
 
-  buildDocumentEFFEM() {
+  async buildDocumentEFFEM() {
+    this.loading = true;
+    const {IdUser, WhsCode} = this.auth.getDataToken();
+    
+    let data: shipmentProcess[];
+    data = [];
+    data = this.rowData;
+    const response = await this.shipmentService.processShipmentEFFEM(data).toPromise().catch(err=>{
+      this.childSnak.openSnackBar(`Error al procesar los datos ${err.message}`, 'Cerrar','warning-snackbar');
+      this.loading = false;
+    });   
+    
+    if(response.Data !== null) {
+      const value = this.serviceLayer.sessionIsValid();
+      if(!value){
+          const session = await this.serviceLayer.doLoginSL().toPromise(); // return json
+      }
 
+      if(response.Data.length > 0) {
+
+        let documentsCreated = [];
+        documentsCreated.push(await Promise.all(response.Data.map(async (transferShipment) => {
+          let documentsSAP: any;
+          transferShipment.Series = undefined;
+          transferShipment.U_UsrHH = IdUser;
+          const result = await this.shipmentService.createTransfer(transferShipment).toPromise();
+          if(result != null){
+            if(result.DocEntry){
+              documentsSAP = new shipmentSAP(result.DocEntry, result.DocNum);
+              this.updateShipmentEFFEM(transferShipment.StockTransferLines, 'E', result.DocEntry, result.DocNum);
+            } else {
+              documentsSAP = new shipmentSAP(-1,-1, result.error.message.value);
+            }
+          }
+          return documentsSAP;
+        })));
+        
+        //this.childSnak.openSnackBar(`Generados: ${documentsCreated[0].filter(val => val.DocEntry > 0).map(m => m.DocEntry).join(', ')}  NO Generados: ${documentsCreated[0].filter(val => val.DocEntry === -1).map(m => m.Error).join(', ')}`,'Cerrar','blue-snackbar');
+        this.childSnak.openSnackBar(`Generados: ${documentsCreated[0].filter(val => val.DocEntry > 0).map(m => m.DocEntry).join(', ')}`,'Cerrar','success-snackbar')
+        this.onReset();
+        this.loading = false;
+      } else {
+        this.childSnak.openSnackBar(`No hay documentos para integrar`,'Cerrar','warning-snackbar');
+        this.loading = false;
+      }      
+    } else {
+      this.childSnak.openSnackBar(`Se genero un error al momento de construir los documentos`,'Cerrar','warning-snackbar');
+      this.loading = false;
+    }
   }
 
   async updateStFolio(status: string, docEntry: number, DocNum: number) {
@@ -114,13 +163,25 @@ export class ShipmentComponent implements OnInit {
     await this.shipmentService.updateBatchs(listBatchs, status, DocNum, docEntry).toPromise();
   }
 
+  async updateShipmentEFFEM(batchs: any[], status: string, docEntry: number, DocNum: number){
+    let listBatchs = [];
+    batchs.map(val => {
+      val.BatchNumbers.map(b => {
+        listBatchs.push(b.BatchNumber)
+      })
+    })
+    await this.shipmentService.updateBatchs(listBatchs, status, DocNum, docEntry).toPromise();
+  }
+
   async readCodebars(event){
     const applyGR =  await this.applyGR(event);
     const {IdUser, WhsCode} = this.auth.getDataToken();
     if(!applyGR.Data) { // Process NOT EFFEM
       this.isEFEEM = false;
       if(this.numShipment !== null && this.numShipment !== ""){
-        this.childSnak.openSnackBar('El lote NO APLICA para GR, ingrese un n° de embarque', 'Cerrar','error-snackbar');  
+        this.childSnak.openSnackBar('El lote NO APLICA para GR, NO debe ingresar un número de embarque', 'Cerrar','error-snackbar');  
+        this.numShipment = null;
+        this.fieldLabel = '';
       } else {
         if(!this.existCodebars(event)) {
           this.shipmentService.getBatch(event, WhsCode).subscribe(response => {
@@ -143,18 +204,25 @@ export class ShipmentComponent implements OnInit {
       }
     } else { // Process EFFEM
       this.isEFEEM = true;
-      if(this.client.partner !== '' && this.numShipment !== ''){
-          let lineRequest = this.existBatchInMemoryDocument(event);
-          if(lineRequest !== -1){
-            this.isValidEFFEM(event, lineRequest)
-          }else {
-            setTimeout(() => {
-              this.childSnak.openSnackBar(`El lote ${event} no existe en el documento ${this.numShipment}`, 'Cerrar','warning-snackbar');
+      if(this.client.partner && this.numShipment) {
+          if(!this.existCodebars(event)){
+            let lineRequest = this.existBatchInMemoryDocument(event);
+            if(lineRequest !== -1){
+              this.isValidEFFEM(event, lineRequest)
+            }else {
+              setTimeout(() => {
+                this.childSnak.openSnackBar(`El lote ${event} no existe en el documento ${this.numShipment}`, 'Cerrar','warning-snackbar');
+                this.fieldLabel = '';
+              }, 100);
+            }
+          } else {
+            setTimeout( () => {
+              this.childSnak.openSnackBar('El lote ya fue leído', 'Cerrar','warning-snackbar');
               this.fieldLabel = '';
             }, 100);
           }
       } else {
-        this.childSnak.openSnackBar('Lote EFFEM debe ingresar un número de documento', 'Cerrar','warning-snackbar');
+        this.childSnak.openSnackBar('Este Lote aplica para EFFEM, debe ingresar un número de documento', 'Cerrar','warning-snackbar');
         this.fieldLabel = '';
       }
     }
@@ -171,8 +239,8 @@ export class ShipmentComponent implements OnInit {
   }
 
   addRowTableEFFEM(lineRequest: number) {
-    const values = this.memoryDocument[lineRequest];
-    this.rowData.push(values);
+    const {U_LoteSAP: DistNumber, BinCode, AbsEntryF, AbsEntryT, ItemCode, ItemName, Quantity, FromWhsCod: FromWhsCod, WhsCode , Status, U_stFolio, DocEntry, DocNum, LineNum, GR, OC} = this.memoryDocument[lineRequest];
+    this.rowData.push({DistNumber: DistNumber, BinCode: BinCode, AbsEntry: AbsEntryF, AbsEntryT: AbsEntryT, ItemCode: ItemCode, ItemName: ItemName, Quantity: Quantity, FromWhsCode: FromWhsCod, ToWhsCode: WhsCode, U_stFolio: U_stFolio, DocNum: DocNum, DocEntry: DocEntry, LineNum: LineNum, OC: OC, GR: GR });
     this.gridApi.setRowData(this.rowData);
     this.fieldLabel = '';
   }
@@ -223,13 +291,17 @@ export class ShipmentComponent implements OnInit {
   }
 
   async isValidEFFEM(batch: string, lineRequest: number) {
-    const validEFFEM = await this.shipmentService.validEFEEM(batch, 1).toPromise<any>().catch(err => {
+    const validEFFEM = await this.shipmentService.validEFEEM(batch, 1).toPromise();
+    /* .catch(err => {
       this.childSnak.openSnackBar('Error al validar si es EFFEM', 'Cerrar','warning-snackbar');
-    });
+    }); */
     if(validEFFEM.Data !== null) {
       if(this.validRulesEFFEM(validEFFEM.Data)){
          if(this.validFirstPosition(validEFFEM.Data.OC)){
             this.addRowTableEFFEM(lineRequest);
+         } else {
+            this.childSnak.openSnackBar('El folio no tiene el mismo OC que el primer registro', 'Cerrar','warning-snackbar');
+            this.fieldLabel = '';
          }
       }
     } else {
@@ -259,7 +331,10 @@ export class ShipmentComponent implements OnInit {
   validFirstPosition(paramOc: any): boolean {
     let validFirst = false;
     if(this.rowData.length > 0){
-      validFirst = this.rowData[0].OC === paramOc && true;
+      if(this.rowData[0].OC === paramOc)
+        validFirst = true;
+      else
+        validFirst = false;
     } else {
       validFirst = true;
     }
@@ -270,6 +345,7 @@ export class ShipmentComponent implements OnInit {
     this.shipmentService.getDocumentShipment(this.numShipment).subscribe(response => {
       if(response.Data.length > 0) {
         this.memoryDocument = response.Data;
+        this.client.partner = response.Data[0].CardCode;
         this.childSnak.openSnackBar('Documento cargado correctamente', 'Cerrar','success-snackbar');
       } else {
         this.childSnak.openSnackBar(`No se recuperaron datos para el documento ${this.numShipment}`, 'Cerrar','success-snackbar');
@@ -338,6 +414,7 @@ export class ShipmentComponent implements OnInit {
     this.gridApi.setRowData([]);
     this.client.partner = null;
     this.numShipment = null;
+    this.isEFEEM = false;
   }
 
 }

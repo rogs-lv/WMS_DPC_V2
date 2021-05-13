@@ -79,6 +79,39 @@ export class transfer {
         this.StockTransferLines = StockTransferLines_;
     }
 }
+
+export class transferShipment {
+    Series?: number;
+    DocDate: string;
+    FromWarehouse: string;
+    ToWarehouse: string;
+    U_Destino?: string;
+    U_OrigenMov: string;
+    U_UsrHH: string;
+    U_FechaMov: string;
+    U_HoraMov: string;
+    U_Remisionado: string;
+    Comments: string;
+    U_ItemRem: string;
+    U_ItemRemQty: number;
+    StockTransferLines: transferLine[];
+    constructor(DocDate_: string, FromWarehouse_: string, ToWarehouse_: string, U_OrigenMov_: string, U_UsrHH_: string, StockTransferLines_: transferLine[], U_FechaMov_: string, U_HoraMov_: string, Serie_?: number,  U_Destino_?: string, Remisionado_?:string, Comments_?: string, U_ItemRem_? : string, U_ItemRemQty_?: number) {
+        this.Series = Serie_;
+        this.DocDate = DocDate_;
+        this.FromWarehouse = FromWarehouse_;
+        this.ToWarehouse = ToWarehouse_;
+        this.U_Destino = U_Destino_;
+        this.U_OrigenMov = U_OrigenMov_;
+        this.U_UsrHH = U_UsrHH_;
+        this.U_FechaMov = U_FechaMov_;
+        this.U_HoraMov = U_HoraMov_;
+        this.U_Remisionado = Remisionado_;
+        this.Comments = Comments_;
+        this.U_ItemRem = U_ItemRem_;
+        this.U_ItemRemQty = U_ItemRemQty_;
+        this.StockTransferLines = StockTransferLines_;
+    }
+}
 // Transfer request
 export class OpenTransferRequest
 {
