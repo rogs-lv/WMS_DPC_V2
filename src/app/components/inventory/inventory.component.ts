@@ -306,7 +306,9 @@ export class InventoryComponent implements OnInit {
         });
         dialogRef.afterClosed().subscribe(result => {
           //array of lotes
-          this.buildDataTable(result);
+          if(result) {
+            this.buildDataTable(result);
+          }
           this.locationRec = '';
         });
       }
