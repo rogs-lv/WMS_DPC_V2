@@ -74,7 +74,11 @@
               </div>
               <br>
               <div class="row d-flex justify-content-center">
-                  <button type="button" class="btn btn-primary" (click)="onSubmit()" *ngIf="!loading" [disabled]="rowData.length === 0"><span style="font-size: 1.5em;"><i class="fas fa-plane"></i></span> Generar Movimiento</button>
+                  <button type="button" class="btn btn-primary" (click)="onSubmit()" *ngIf="!loading" [disabled]="rowData.length === 0">
+                    <span *ngIf="isOnlyLocked()"> Bloquear</span>
+                    <span *ngIf="isOnlyRelease()"> Desbloquear</span>
+                    <span *ngIf="areBothMovements()"> Generar Movimiento</span>
+                    </button>
                   <button class="btn btn-primary" *ngIf="loading"><span><i class="fas fa-spinner fa-pulse"></i></span></button>
               </div>
             </div>
