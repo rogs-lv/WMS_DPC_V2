@@ -30,7 +30,6 @@ import { SnakbarComponent } from './components/shared/snakbar/snakbar.component'
 import { FilterModulePipe } from './pipes/filter-module.pipe';
 import { FilterSubmodulePipe } from './pipes/filter-submodule.pipe';
 import { FilterTableUsersPipe } from './pipes/filter-table-users.pipe';
-import { PageNotFoundComponent } from './components/shared/page-not-found/page-not-found.component';
 import { DialogConfirmComponent } from './components/shared/dialog-confirm/dialog-confirm.component';
 import { LocationBatchComponent } from './components/inventory/dialog/location-batch/location-batch.component';
 import { ChangeWhsComponent } from './components/inventory/dialog/change-whs/change-whs.component';
@@ -62,7 +61,6 @@ import { MultibatchComponent } from './components/transfer/dialog/multibatch/mul
     FilterModulePipe,
     FilterSubmodulePipe,
     FilterTableUsersPipe,
-    PageNotFoundComponent,
     DialogConfirmComponent,
     LocationBatchComponent,
     ChangeWhsComponent,

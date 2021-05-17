@@ -7,6 +7,7 @@ import { ServiceLayer } from 'src/app/service/shared/ServicesLayer.service';
 import { TransferService } from '../../../service/transfer/transfer.service';
 import { SnakbarComponent } from '../../shared/snakbar/snakbar.component';
 import { DialogLocationComponent } from '../dialog/dialog-location/dialog-location.component';
+import { MultibatchComponent } from '../dialog/multibatch/multibatch.component';
 import { SuggestedComponent } from '../dialog/suggested/suggested.component';
 
 @Component({
@@ -105,10 +106,26 @@ export class MoveComponent implements OnInit {
       const { WhsCode } = this.auth.getDataToken();
       this.transferService.getBatch(event, WhsCode).subscribe(response => {
         if(response.Code === 0) {
-          const { AbsEntryBatch, DistNumber, BinCode, AbsEntry, ItemCode, ItemName, Quantity, WhsCode, Status } = response.Data[0];
-          this.rowData.push({AbsEntryBatch: AbsEntryBatch, DistNumber: DistNumber, BinCode: BinCode, AbsEntry: AbsEntry, ItemCode: ItemCode, ItemName: ItemName, Quantity: Quantity, WhsCode: WhsCode, NewBinCode: '', NewAbsEntry: ''  });
-          this.gridApi.setRowData(this.rowData);
-          this.fieldLabel = '';
+          if(response.Data.length > 1) {
+            //Open modal
+             const dialogRef = this.dialog.open(MultibatchComponent, {
+               width: 'auto',
+               data: response.Data
+             });
+             dialogRef.afterClosed().subscribe(result => {
+               if(dialogRef.componentInstance.rowSelected) {
+                 const { AbsEntryBatch, DistNumber, BinCode, AbsEntry, ItemCode, ItemName, Quantity, WhsCode, Status } = dialogRef.componentInstance.rowSelected;
+                 this.rowData.push({AbsEntryBatch: AbsEntryBatch, DistNumber: DistNumber, BinCode: BinCode, AbsEntry: AbsEntry, ItemCode: ItemCode, ItemName: ItemName, Quantity: Quantity, WhsCode: WhsCode, NewBinCode: '', NewAbsEntry: ''  });
+                 this.gridApi.setRowData(this.rowData);
+                 this.fieldLabel = '';
+               }
+             });
+           } else {
+              const { AbsEntryBatch, DistNumber, BinCode, AbsEntry, ItemCode, ItemName, Quantity, WhsCode, Status } = response.Data[0];
+              this.rowData.push({AbsEntryBatch: AbsEntryBatch, DistNumber: DistNumber, BinCode: BinCode, AbsEntry: AbsEntry, ItemCode: ItemCode, ItemName: ItemName, Quantity: Quantity, WhsCode: WhsCode, NewBinCode: '', NewAbsEntry: ''  });
+              this.gridApi.setRowData(this.rowData);
+              this.fieldLabel = '';
+           }
         } else {
           this.childSnak.openSnackBar(response.Message, 'Cerrar','warning-snackbar');
           this.fieldLabel = '';
@@ -167,7 +184,7 @@ export class MoveComponent implements OnInit {
         });
       }
       else {
-        this.childSnak.openSnackBar(`La ubicación ${this.fielfBincode} NO existe`, 'Cerrar','warning-snackbar');
+        this.childSnak.openSnackBar(`La ubicación ${this.fielfBincode} NO existe o no tiene lotes`, 'Cerrar','warning-snackbar');
         this.fielfBincode = '';
       }
     }, (err) => {

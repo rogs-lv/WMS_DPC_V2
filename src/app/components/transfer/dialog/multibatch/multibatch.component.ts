@@ -20,7 +20,7 @@ export class MultibatchComponent implements OnInit {
     this.rowSelected = value;
     this.dialogRef.close();
   }
-  onCloseClick(value:any) {
+  onCloseClick() {
     this.dialogRef.close();
   }
 }

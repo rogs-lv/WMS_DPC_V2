@@ -13,7 +13,6 @@ import { ReceiptComponent } from '../transfer/receipt/receipt.component';
 import { RequestComponent } from '../transfer/request/request.component';
 import { PROFILE_ROUTES } from '../profiles/profiles.routes';
 import { AuthHomeGuard } from 'src/app/guards/auth-home.guard';
-import { PageNotFoundComponent } from '../shared/page-not-found/page-not-found.component';
 
 export const HOME_ROUTES: Routes = [
     { path: 'dashboard', component:  DashboardComponent},
