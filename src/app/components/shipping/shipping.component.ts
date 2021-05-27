@@ -84,20 +84,25 @@ export class ShippingComponent implements OnInit {
     
     const value = this.serviceLayer.sessionIsValid();
     if(!value){
-        const session = await this.serviceLayer.doLoginSL().toPromise(); // return json
+        const session = await this.serviceLayer.doLoginSL().toPromise().catch(err => {
+          this.childSnak.openSnackBar(err.error.error.message.value, 'Cerrar','warning-snackbar');
+          this.loading = false;
+          return;
+        }); // return json
+        if(session) {
+          this.serviceShipping.createInventoryTransferRequest(document).subscribe(result => {
+            if(result.DocEntry) {
+              this.updateStFolio();
+              this.childSnak.openSnackBar(`Transferencia generada: ${result.DocNum}`,'Cerrar','success-snackbar');
+              this.loading = false;
+              this.onReset();
+            }
+          }, (err) => {
+            this.childSnak.openSnackBar(`${err.error.error.message.value}`, 'Cerrar','warning-snackbar');
+            this.loading = false;
+          });
+        }
     }
-    
-    this.serviceShipping.createInventoryTransferRequest(document).subscribe(result => {
-      if(result.DocEntry) {
-        this.updateStFolio();
-        this.childSnak.openSnackBar(`Transferencia generada: ${result.DocNum}`,'Cerrar','success-snackbar');
-        this.loading = false;
-        this.onReset();
-      }
-    }, (err) => {
-      this.childSnak.openSnackBar(`${err.error.error.message.value}`, 'Cerrar','warning-snackbar');
-      this.loading = false;
-    });
   }
 
   async updateStFolio() {

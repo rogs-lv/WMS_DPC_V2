@@ -9,7 +9,7 @@
                 <label for="ShipmentNum" class="col-lg-2 col-sm-2 col-sm-4 col-4 col-form-label">N° Solicitud</label>
                 <div class="input-group col-lg-3 col-md-3 col-sm-8 col-8">
                     <input type="text" class="form-control" placeholder="Solicitud" #NumRequest="ngModel" name="NumRequest" [(ngModel)]="numRequest">
-                    <div class="input-group-append">
+                    <div class="input-group-append" style="display: block;">
                         <button class="btn btn-outline-secondary" (click)="onLoadDocument()">
                             <span><i class="fas fa-plus"></i></span>
                         </button>

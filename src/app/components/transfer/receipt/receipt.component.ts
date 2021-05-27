@@ -74,20 +74,26 @@ export class ReceiptComponent implements OnInit {
     if(response) {
       const value = this.serviceLayer.sessionIsValid();
       if(!value){
-          const session = await this.serviceLayer.doLoginSL().toPromise(); // return json
+          const session = await this.serviceLayer.doLoginSL().toPromise().catch(err => {
+            this.childSnak.openSnackBar(err.error.error.message.value, 'Cerrar','warning-snackbar');
+            this.loading = false;
+            return;
+          }); // return json
+          if(session){
+            response.Data.Series = serie;
+            response.Data.U_UsrHH = IdUser;
+            this.transferService.createTransfer(response.Data).subscribe(result => {
+              if(result.DocEntry) {
+                this.childSnak.openSnackBar(`Transferencia generada: ${result.DocNum}`,'Cerrar','success-snackbar');
+                this.loading = false;
+                this.onReset();
+              }
+            }, (err) => {
+              this.childSnak.openSnackBar(`${err.error.error.message.value}`, 'Cerrar','warning-snackbar');
+              this.loading = false;
+            });
+          }
       }
-      response.Data.Series = serie;
-      response.Data.U_UsrHH = IdUser;
-      this.transferService.createTransfer(response.Data).subscribe(result => {
-        if(result.DocEntry) {
-          this.childSnak.openSnackBar(`Transferencia generada: ${result.DocNum}`,'Cerrar','success-snackbar');
-          this.loading = false;
-          this.onReset();
-        }
-      }, (err) => {
-        this.childSnak.openSnackBar(`${err.error.error.message.value}`, 'Cerrar','warning-snackbar');
-        this.loading = false;
-      });
     }
   }
 

@@ -140,42 +140,47 @@ export class QualityComponent implements OnInit {
     this.loading = true;
     const value = this.serviceLayer.sessionIsValid();
     if(!value){
-        const session = await this.serviceLayer.doLoginSL().toPromise(); // return json
-    }
-
-    if(this.isOnlyLocked()) { // Only locked batchs
-      this.onLockedOrRelease("bdsStatus_Locked").then(locked => {
-        if(locked > 0) {
-          this.childSnak.openSnackBar(`Lotes bloqueados: ${locked}`, 'Cerrar','success-snackbar');
-          this.onRestart();
+        const session = await this.serviceLayer.doLoginSL().toPromise().catch(err => {
+          this.childSnak.openSnackBar(err.error.error.message.value, 'Cerrar','warning-snackbar');
           this.loading = false;
-        } else {
-          this.childSnak.openSnackBar(`No se pudieron actualizar todos los lotes`, 'Cerrar','warning-snackbar');
-          this.loading = false;
+          return;
+        }); // return json
+        if(session) {
+          if(this.isOnlyLocked()) { // Only locked batchs
+            this.onLockedOrRelease("bdsStatus_Locked").then(locked => {
+              if(locked > 0) {
+                this.childSnak.openSnackBar(`Lotes bloqueados: ${locked}`, 'Cerrar','success-snackbar');
+                this.onRestart();
+                this.loading = false;
+              } else {
+                this.childSnak.openSnackBar(`No se pudieron actualizar todos los lotes`, 'Cerrar','warning-snackbar');
+                this.loading = false;
+              }
+              /* this.logOutSL(); */
+            }).catch(err => {
+              this.childSnak.openSnackBar(`${err.error.error.message.value}`, 'Cerrar','warning-snackbar');
+              this.loading = false;
+            });
+          } else if (this.isOnlyRelease()) { // Only release (unlocked) batchs
+            this.onLockedOrRelease("bdsStatus_Released").then(release => {
+              if(release > 0){
+                this.childSnak.openSnackBar(`Lotes desbloqueados: ${release}`, 'Cerrar','success-snackbar');
+                this.onRestart();
+                this.loading = false;
+              } else {
+                this.childSnak.openSnackBar(`No se pudieron actualizar todos los lotes`, 'Cerrar','warning-snackbar');
+                this.loading = false;
+              }
+              /* this.logOutSL(); */
+            }).catch(err => {
+              this.childSnak.openSnackBar(`${err.error.error.message.value}`, 'Cerrar','warning-snackbar');
+              this.loading = false;
+            });
+          } else if (this.areBothMovements()) { // Both movements (locked and movement)
+            this.onMovementLocked();
+          }
         }
-        /* this.logOutSL(); */
-      }).catch(err => {
-        this.childSnak.openSnackBar(`${err.error.error.message.value}`, 'Cerrar','warning-snackbar');
-        this.loading = false;
-      });
-    } else if (this.isOnlyRelease()) { // Only release (unlocked) batchs
-      this.onLockedOrRelease("bdsStatus_Released").then(release => {
-        if(release > 0){
-          this.childSnak.openSnackBar(`Lotes desbloqueados: ${release}`, 'Cerrar','success-snackbar');
-          this.onRestart();
-          this.loading = false;
-        } else {
-          this.childSnak.openSnackBar(`No se pudieron actualizar todos los lotes`, 'Cerrar','warning-snackbar');
-          this.loading = false;
-        }
-        /* this.logOutSL(); */
-      }).catch(err => {
-        this.childSnak.openSnackBar(`${err.error.error.message.value}`, 'Cerrar','warning-snackbar');
-        this.loading = false;
-      });
-    } else if (this.areBothMovements()) { // Both movements (locked and movement)
-      this.onMovementLocked();
-    }
+    }    
   }
 
   async onLockedOrRelease(newStatus: string) {
