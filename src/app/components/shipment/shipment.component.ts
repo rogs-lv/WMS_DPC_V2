@@ -29,7 +29,7 @@ export class ShipmentComponent implements OnInit {
   readManual: boolean = false;
   fieldLabel: string = '';
   client: BusnessPartner;
-  numShipment = null;
+  /* numShipment = null; */
   memoryDocument: documentship[];
   isEFEEM = false;
   
@@ -115,8 +115,7 @@ export class ShipmentComponent implements OnInit {
       this.childSnak.openSnackBar(`Error al procesar los datos ${err.message}`, 'Cerrar','warning-snackbar');
       this.loading = false;
     });   
-    
-    if(response.Data !== null) {
+    if(response.Data) {
       const value = this.serviceLayer.sessionIsValid();
       if(!value){
           const session = await this.serviceLayer.doLoginSL().toPromise().catch(err => {
@@ -126,13 +125,15 @@ export class ShipmentComponent implements OnInit {
           }); // return json
           if(session){
             if(response.Data.length > 0) {
-
               let documentsCreated = [];
               documentsCreated.push(await Promise.all(response.Data.map(async (transferShipment) => {
                 let documentsSAP: any;
                 transferShipment.Series = undefined;
                 transferShipment.U_UsrHH = IdUser;
-                const result = await this.shipmentService.createTransfer(transferShipment).toPromise();
+                const result = await this.shipmentService.createTransfer(transferShipment).toPromise().catch(err => {
+                  this.childSnak.openSnackBar(`Error al generar el traspaso`,'Cerrar','success-snackbar')
+                  this.loading = false;
+                });
                 if(result != null){
                   if(result.DocEntry){
                     documentsSAP = new shipmentSAP(result.DocEntry, result.DocNum);
@@ -183,11 +184,6 @@ export class ShipmentComponent implements OnInit {
     const {IdUser, WhsCode} = this.auth.getDataToken();
     if(!applyGR.Data) { // Process NOT EFFEM
       this.isEFEEM = false;
-      if(this.numShipment !== null && this.numShipment !== ""){
-        this.childSnak.openSnackBar('El lote NO APLICA para GR, NO debe ingresar un número de embarque', 'Cerrar','error-snackbar');  
-        this.numShipment = null;
-        this.fieldLabel = '';
-      } else {
         if(!this.existCodebars(event)) {
           this.shipmentService.getBatch(event, WhsCode).subscribe(response => {
             if(response.Code === 0) {
@@ -206,33 +202,40 @@ export class ShipmentComponent implements OnInit {
             this.fieldLabel = '';
           }, 100);
         }
-      }
     } else { // Process EFFEM
       this.isEFEEM = true;
-      if(this.client.partner && this.numShipment) {
-          if(!this.existCodebars(event)){
-            let lineRequest = this.existBatchInMemoryDocument(event);
-            if(lineRequest !== -1){
-              this.isValidEFFEM(event, lineRequest)
-            }else {
-              setTimeout(() => {
-                this.childSnak.openSnackBar(`El lote ${event} no existe en el documento ${this.numShipment}`, 'Cerrar','warning-snackbar');
-                this.fieldLabel = '';
-              }, 100);
-            }
+      if(!this.existCodebars(event)) {
+        this.shipmentService.getBatch(event, WhsCode).subscribe(response => {
+          if(response.Code === 0) {
+            this.isValidEFFEM(event, response);
           } else {
-            setTimeout( () => {
-              this.childSnak.openSnackBar('El lote ya fue leído', 'Cerrar','warning-snackbar');
-              this.fieldLabel = '';
-            }, 100);
+            this.childSnak.openSnackBar(response.Message, 'Cerrar','warning-snackbar');
+            this.fieldLabel = '';
           }
+        }, (err) => {
+          this.childSnak.openSnackBar(err.message, 'Cerrar','warning-snackbar');
+          this.fieldLabel = '';
+        });
       } else {
-        this.childSnak.openSnackBar('Este Lote aplica para EFFEM, debe ingresar un número de documento', 'Cerrar','warning-snackbar');
-        this.fieldLabel = '';
+        setTimeout( () => {
+          this.childSnak.openSnackBar('El lote ya fue leído', 'Cerrar','warning-snackbar');
+          this.fieldLabel = '';
+        }, 100);
       }
     }
   }
   
+  addRowEFFEM(response: any, OC: any, GR: any) {
+    const result = this.validateRead(response, '')
+    if(result){
+      let AbsEntryTo = 0;
+      const { AbsEntryBatch, DistNumber, BinCode, AbsEntry : AbsEntryF, ItemCode, ItemName, Quantity, WhsCode, Status, U_stFolio, ItmsGrpCod } = response;
+      this.rowData.push({AbsEntryBatch: AbsEntryBatch, DistNumber: DistNumber, BinCode: BinCode, AbsEntry: AbsEntryF, AbsEntryT: AbsEntryTo, ItemCode: ItemCode, ItemName: ItemName, Quantity: Quantity, FromWhsCode: WhsCode, ToWhsCode: 'EMBARQUE', U_stFolio: U_stFolio, DocNum: 0, DocEntry: 0, LineNum: -1, OC: OC, GR: GR });
+      this.gridApi.setRowData(this.rowData);
+      this.fieldLabel = '';
+    }
+  }
+
   addRowTable(response: any, whsCode: string) {
     const result = this.validateRead(response, whsCode)
     if(result){
@@ -258,11 +261,11 @@ export class ShipmentComponent implements OnInit {
       isValid = false;
       return isValid;
     }
-    if(whsCode !== data.WhsCode){
+    /* if(whsCode !== data.WhsCode){
       this.childSnak.openSnackBar('El lote no pertenece al mismo almacén', 'Cerrar','warning-snackbar');
       isValid = false;
       return isValid;
-    }
+    } */
     if(data.Status !== 0){
       this.childSnak.openSnackBar('El lote esta bloqueado', 'Cerrar','warning-snackbar');
       isValid = false;
@@ -295,7 +298,7 @@ export class ShipmentComponent implements OnInit {
     return exist !== -1 ? exist : -1;
   }
 
-  async isValidEFFEM(batch: string, lineRequest: number) {
+  async isValidEFFEM(batch: string, response: any) {
     const validEFFEM = await this.shipmentService.validEFEEM(batch, 1).toPromise();
     /* .catch(err => {
       this.childSnak.openSnackBar('Error al validar si es EFFEM', 'Cerrar','warning-snackbar');
@@ -303,7 +306,7 @@ export class ShipmentComponent implements OnInit {
     if(validEFFEM.Data !== null) {
       if(this.validRulesEFFEM(validEFFEM.Data)){
          if(this.validFirstPosition(validEFFEM.Data.OC)){
-            this.addRowTableEFFEM(lineRequest);
+           this.addRowEFFEM(response.Data[0], validEFFEM.Data.OC, validEFFEM.Data.GR);
          } else {
             this.childSnak.openSnackBar('El folio no tiene el mismo OC que el primer registro', 'Cerrar','warning-snackbar');
             this.fieldLabel = '';
@@ -318,9 +321,9 @@ export class ShipmentComponent implements OnInit {
   validRulesEFFEM(dataBatch: any): boolean {
     let validRule = true;
     this.fieldLabel = '';
-    if(dataBatch.U_stFolio !== 'R') { // -10
+    if(dataBatch.U_stFolio === 'E') { // -20
       validRule = false;
-      this.childSnak.openSnackBar('El lote no tiene el estatus de Remisionado', 'Cerrar','warning-snackbar');
+      this.childSnak.openSnackBar('El folio ya fue Embarcado', 'Cerrar','warning-snackbar');
     }
     if(dataBatch.GR.length === 0) { // -20
       validRule = false;
@@ -346,7 +349,7 @@ export class ShipmentComponent implements OnInit {
     return validFirst;
   }
 
-  getDocumentShipment() {
+  /* getDocumentShipment() {
     this.shipmentService.getDocumentShipment(this.numShipment).subscribe(response => {
       if(response.Data.length > 0) {
         this.memoryDocument = response.Data;
@@ -358,7 +361,7 @@ export class ShipmentComponent implements OnInit {
     }, (err)=>{
       this.childSnak.openSnackBar(err.message, 'Cerrar','warning-snackbar');
     })
-  }
+  } */
 
   getListPartners() {
     this.shipmentService.getListClients().subscribe(response => {
@@ -418,7 +421,7 @@ export class ShipmentComponent implements OnInit {
     this.rowData = [];
     this.gridApi.setRowData([]);
     this.client.partner = null;
-    this.numShipment = null;
+    /* this.numShipment = null; */
     this.isEFEEM = false;
   }
 
