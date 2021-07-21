@@ -165,12 +165,14 @@ export class MoveComponent implements OnInit {
         return true;
       } else {
         this.childSnak.openSnackBar('La ubicacion no esta habilitada o no existe', 'Cerrar','warning-snackbar');
-        params.data.BinCode = params.oldValue;
+        params.data.NewAbsEntry = 0;
+        params.data.NewBinCode = params.oldValue;
         return false;
       }
     }, (err) => {
       this.childSnak.openSnackBar(err.message, 'Cerrar','warning-snackbar');
-      params.data.BinCode = params.oldValue;
+      params.data.NewAbsEntry = 0;
+      params.data.NewBinCode = params.oldValue;
       return false;
     })
   }
