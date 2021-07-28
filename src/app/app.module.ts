@@ -37,6 +37,7 @@ import { DialogLocationComponent } from './components/transfer/dialog/dialog-loc
 import { SuggestedComponent } from './components/transfer/dialog/suggested/suggested.component';
 import { OpenRequestComponent } from './components/transfer/dialog/open-request/open-request.component';
 import { MultibatchComponent } from './components/transfer/dialog/multibatch/multibatch.component';
+import { AdslComponent } from './components/adsl/adsl.component';
 @NgModule({
   declarations: [
     AppComponent,
@@ -67,7 +68,8 @@ import { MultibatchComponent } from './components/transfer/dialog/multibatch/mul
     DialogLocationComponent,
     SuggestedComponent,
     OpenRequestComponent,
-    MultibatchComponent
+    MultibatchComponent,
+    AdslComponent
   ],
   imports: [
     BrowserModule,
