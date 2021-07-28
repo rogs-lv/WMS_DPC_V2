@@ -13,7 +13,7 @@ import { ReceiptComponent } from '../transfer/receipt/receipt.component';
 import { RequestComponent } from '../transfer/request/request.component';
 import { PROFILE_ROUTES } from '../profiles/profiles.routes';
 import { AuthHomeGuard } from 'src/app/guards/auth-home.guard';
-import { PageNotFoundComponent } from '../shared/page-not-found/page-not-found.component';
+import { AdslComponent } from '../adsl/adsl.component';
 
 export const HOME_ROUTES: Routes = [
     { path: 'dashboard', component:  DashboardComponent},
@@ -28,6 +28,7 @@ export const HOME_ROUTES: Routes = [
     { path: 'production', component:  ProduccionComponent, canActivate: [ AuthHomeGuard ]},
     { path: 'receipt', component:  ReceiptComponent, canActivate: [ AuthHomeGuard ]},
     { path: 'request', component:  RequestComponent, canActivate: [ AuthHomeGuard ]},
+    { path: 'adsl', component:  AdslComponent, canActivate: [ AuthHomeGuard ]},
     /* { path: 'pagenotfound', component:  PageNotFoundComponent}, */
     { path: '**', pathMatch: 'full', redirectTo:'dashboard'},
 ];

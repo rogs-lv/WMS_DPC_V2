@@ -1,0 +1,26 @@
+<h1 mat-dialog-title style="text-align: center;">Solicitudes Abiertas</h1>
+<div mat-dialog-content>
+    <table class="table table-striped">
+        <thead>
+          <tr>
+            <th scope="col">#</th>
+            <th scope="col">Num. Solicitud</th>
+            <th scope="col">Fecha</th>
+            <th scope="col">Origen</th>            
+            <th scope="col">Destino</th>            
+          </tr>
+        </thead>
+        <tbody >
+          <tr *ngFor="let row of data; let i = index">
+            <td (click)="onNoClick(row)">{{i+1}}</td>
+            <td (click)="onNoClick(row)">{{row.DocNum}}</td>
+            <td (click)="onNoClick(row)">{{row.DocDate |date : 'shortDate'}}</td>
+            <td (click)="onNoClick(row)">{{row.Filler}}</td>
+            <td (click)="onNoClick(row)">{{row.ToWhsCode}}</td>
+          </tr>
+        </tbody>
+      </table>
+</div>
+<div mat-dialog-actions align="end">
+  <button mat-raised-button color="warn" (click)="onCloseClick()" cdkFocusInitial>Cerrar</button>
+</div>

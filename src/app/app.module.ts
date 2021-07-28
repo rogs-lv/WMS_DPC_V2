@@ -30,11 +30,14 @@ import { SnakbarComponent } from './components/shared/snakbar/snakbar.component'
 import { FilterModulePipe } from './pipes/filter-module.pipe';
 import { FilterSubmodulePipe } from './pipes/filter-submodule.pipe';
 import { FilterTableUsersPipe } from './pipes/filter-table-users.pipe';
-import { PageNotFoundComponent } from './components/shared/page-not-found/page-not-found.component';
 import { DialogConfirmComponent } from './components/shared/dialog-confirm/dialog-confirm.component';
 import { LocationBatchComponent } from './components/inventory/dialog/location-batch/location-batch.component';
 import { ChangeWhsComponent } from './components/inventory/dialog/change-whs/change-whs.component';
-
+import { DialogLocationComponent } from './components/transfer/dialog/dialog-location/dialog-location.component';
+import { SuggestedComponent } from './components/transfer/dialog/suggested/suggested.component';
+import { OpenRequestComponent } from './components/transfer/dialog/open-request/open-request.component';
+import { MultibatchComponent } from './components/transfer/dialog/multibatch/multibatch.component';
+import { AdslComponent } from './components/adsl/adsl.component';
 @NgModule({
   declarations: [
     AppComponent,
@@ -59,10 +62,14 @@ import { ChangeWhsComponent } from './components/inventory/dialog/change-whs/cha
     FilterModulePipe,
     FilterSubmodulePipe,
     FilterTableUsersPipe,
-    PageNotFoundComponent,
     DialogConfirmComponent,
     LocationBatchComponent,
-    ChangeWhsComponent
+    ChangeWhsComponent,
+    DialogLocationComponent,
+    SuggestedComponent,
+    OpenRequestComponent,
+    MultibatchComponent,
+    AdslComponent
   ],
   imports: [
     BrowserModule,
@@ -74,7 +81,7 @@ import { ChangeWhsComponent } from './components/inventory/dialog/change-whs/cha
     HttpClientModule,
     AgGridModule.withComponents([])
   ],
-  entryComponents: [FolioComponent, DialogConfirmComponent, InventoryComponent, LocationBatchComponent, ChangeWhsComponent],
+  entryComponents: [FolioComponent, DialogConfirmComponent, InventoryComponent, LocationBatchComponent, ChangeWhsComponent, DialogLocationComponent, MoveComponent, SuggestedComponent, RequestComponent, OpenRequestComponent, ManualComponent, MultibatchComponent],
   providers: [],
   bootstrap: [AppComponent]
 })

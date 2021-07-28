@@ -1,4 +1,5 @@
 export class batch {
+    AbsEntryBatch?: number
     DistNumber: string;
     BinCode: string;
     AbsEntry: string;
@@ -7,6 +8,8 @@ export class batch {
     Quantity: string;
     WhsCode: string;
     Status: string;
+    ItmsGrpCod: number;
+    U_stFolio: string;
 }
 
 export class BatchInLocation {

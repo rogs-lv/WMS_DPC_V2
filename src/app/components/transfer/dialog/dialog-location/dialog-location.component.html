@@ -1,0 +1,26 @@
+<h1 mat-dialog-title style="text-align: center;">Contenido ubicación</h1>
+<div mat-dialog-content>
+    <table class="table table-striped">
+        <thead>
+          <tr>
+            <th scope="col">Lote</th>
+            <th scope="col">Ubicación</th>
+            <th scope="col">Artículo</th>
+            <th scope="col">Desc</th>
+            <th scope="col">Cantidad</th>            
+          </tr>
+        </thead>
+        <tbody >
+          <tr *ngFor="let row of data">
+            <td>{{row.DistNumber}}</td>
+            <td>{{row.BinCode}}</td>
+            <td>{{row.ItemCode}}</td>
+            <td>{{row.ItemName}}</td>
+            <td>{{row.Quantity}}</td>
+          </tr>
+        </tbody>
+      </table>
+</div>
+<div mat-dialog-actions align="end">
+    <button mat-raised-button color="primary" (click)="onYesClick()" cdkFocusInitial>Ok</button>
+</div>

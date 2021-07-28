@@ -27,7 +27,16 @@ $WMS-theme: mat-light-theme($WMS-primary, $WMS-accent, $WMS-warn);
 @include angular-material-theme($WMS-theme);
 
 .blue-snackbar {
-    background: #2196F3;
+    color:white;
+    background: #2196F3 !important;
+    .mat-button-wrapper {
+        color: white !important; // action text color
+        font-weight: normal;
+    }
+    .mat-simple-snackbar {
+        font-size: 18px;
+        font-weight: normal;
+    }
 }
 .red-snackbar {
     background: #F44336;

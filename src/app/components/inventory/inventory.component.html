@@ -4,7 +4,7 @@
           <mat-card-title>{{textActions}}</mat-card-title>
         </mat-card-header>
         <mat-card-content>
-          <form (ngSubmit)="onSubmit(formInventory)" #formInventory="ngForm" novalidate>
+          <form (ngSubmit)="onSubmit()" #formInventory="ngForm" novalidate>
             <div class="row">
                 <div class="col-lg-3 col-md-3 col-sm-4 col-6">
                     <div class="form-group">
@@ -88,7 +88,7 @@
             </div>
             <br>
             <div class="row d-flex justify-content-center">
-                <button type="button" class="btn btn-primary" (click)="onSubmit()"  *ngIf="!loading" [disabled]="rowData.length === 0"><span style="font-size: 1.7em;"><i class="fas fa-save"></i></span> Guardar Registros</button>
+                <button type="button" class="btn btn-primary" (click)="onSubmit()"  *ngIf="!loading" [disabled]="rowData.length === 0"> Guardar Registros</button>
                 <button class="btn btn-primary" *ngIf="loading"><span><i class="fas fa-spinner fa-pulse"></i></span></button>
             </div>
           </form>

@@ -140,42 +140,47 @@ export class QualityComponent implements OnInit {
     this.loading = true;
     const value = this.serviceLayer.sessionIsValid();
     if(!value){
-        const session = await this.serviceLayer.doLoginSL().toPromise(); // return json
-    }
-
-    if(this.isOnlyLocked()) { // Only locked batchs
-      this.onLockedOrRelease("bdsStatus_Locked").then(locked => {
-        if(locked > 0) {
-          this.childSnak.openSnackBar(`Lotes bloqueados: ${locked}`, 'Cerrar','success-snackbar');
-          this.onRestart();
+        const session = await this.serviceLayer.doLoginSL().toPromise().catch(err => {
+          this.childSnak.openSnackBar(err.error.error.message.value, 'Cerrar','warning-snackbar');
           this.loading = false;
-        } else {
-          this.childSnak.openSnackBar(`No se pudieron actualizar todos los lotes`, 'Cerrar','warning-snackbar');
-          this.loading = false;
+          return;
+        }); // return json
+        if(session) {
+          if(this.isOnlyLocked()) { // Only locked batchs
+            this.onLockedOrRelease("bdsStatus_Locked").then(locked => {
+              if(locked > 0) {
+                this.childSnak.openSnackBar(`Lotes bloqueados: ${locked}`, 'Cerrar','success-snackbar');
+                this.onRestart();
+                this.loading = false;
+              } else {
+                this.childSnak.openSnackBar(`No se pudieron actualizar todos los lotes`, 'Cerrar','warning-snackbar');
+                this.loading = false;
+              }
+              /* this.logOutSL(); */
+            }).catch(err => {
+              this.childSnak.openSnackBar(`${err.error.error.message.value}`, 'Cerrar','warning-snackbar');
+              this.loading = false;
+            });
+          } else if (this.isOnlyRelease()) { // Only release (unlocked) batchs
+            this.onLockedOrRelease("bdsStatus_Released").then(release => {
+              if(release > 0){
+                this.childSnak.openSnackBar(`Lotes desbloqueados: ${release}`, 'Cerrar','success-snackbar');
+                this.onRestart();
+                this.loading = false;
+              } else {
+                this.childSnak.openSnackBar(`No se pudieron actualizar todos los lotes`, 'Cerrar','warning-snackbar');
+                this.loading = false;
+              }
+              /* this.logOutSL(); */
+            }).catch(err => {
+              this.childSnak.openSnackBar(`${err.error.error.message.value}`, 'Cerrar','warning-snackbar');
+              this.loading = false;
+            });
+          } else if (this.areBothMovements()) { // Both movements (locked and movement)
+            this.onMovementLocked();
+          }
         }
-        /* this.logOutSL(); */
-      }).catch(err => {
-        this.childSnak.openSnackBar(`${err.error.error.message.value}`, 'Cerrar','warning-snackbar');
-        this.loading = false;
-      });
-    } else if (this.isOnlyRelease()) { // Only release (unlocked) batchs
-      this.onLockedOrRelease("bdsStatus_Released").then(release => {
-        if(release > 0){
-          this.childSnak.openSnackBar(`Lotes desbloqueados: ${release}`, 'Cerrar','success-snackbar');
-          this.onRestart();
-          this.loading = false;
-        } else {
-          this.childSnak.openSnackBar(`No se pudieron actualizar todos los lotes`, 'Cerrar','warning-snackbar');
-          this.loading = false;
-        }
-        /* this.logOutSL(); */
-      }).catch(err => {
-        this.childSnak.openSnackBar(`${err.error.error.message.value}`, 'Cerrar','warning-snackbar');
-        this.loading = false;
-      });
-    } else if (this.areBothMovements()) { // Both movements (locked and movement)
-      this.onMovementLocked();
-    }
+    }    
   }
 
   async onLockedOrRelease(newStatus: string) {
@@ -209,35 +214,29 @@ export class QualityComponent implements OnInit {
     });
     
     for (let i = 0; i < this.rowData.length; i++) {
+      let Lines;
+      let BinTo;
       const data = this.rowData[i];
       const BinFrom =  new binLocation(data.AbsEntry, 2, i, data.Quantity, 0);
-      let BinTo;
-      if(defaultBin.DftBinAbs > 0)
-        BinTo = new binLocation(defaultBin.DftBinAbs, 1, i, data.Quantity, 0);
       const Batchs = new batchNumbers(data.DistNumber, data.WhsCode, data.Quantity, i);
-      let Lines;
-      if(defaultBin.DftBinAbs > 0)
+      if(defaultBin.DftBinAbs > 0) {
+        BinTo = new binLocation(defaultBin.DftBinAbs, 1, i, data.Quantity, 0);
         Lines = new transferLine(data.ItemCode, data.Quantity, this.fieldMove.WhsCode, data.WhsCode, [Batchs], [BinFrom, BinTo]);
-      else
+      } else {
         Lines = new transferLine(data.ItemCode, data.Quantity, this.fieldMove.WhsCode, data.WhsCode, [Batchs], [BinFrom]);
-
+      }
       documentLines.push(Lines);
     }
     const date = new Date();
     const dateDocument = `${date.getFullYear()}-${("0" + (date.getMonth() + 1)).slice(-2)}-${("0" + date.getDate()).slice(-2)}`;
     const hourDocument = `${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}`;
     let document = new transfer(dateDocument, this.rowData[0].WhsCode, this.fieldMove.WhsCode, 'HH', IdUser, documentLines, dateDocument, hourDocument, serie);
-    //console.log(document);
     this.qualityService.doTransfer(document).toPromise().then(result => {
-      //console.log(result)
       if(result.DocEntry) {
+        this.childSnak.openSnackBar(`Movimiento generado: ${result.DocNum}`,'Cerrar','success-snackbar');
         this.onLockedOrRelease("bdsStatus_Locked").then(locked => {
-          if(locked > 0) {
-            this.onRestart();
-            this.loading = false;
-          } else {
-            this.loading = false;
-          }
+          this.onRestart();
+          this.loading = false;
         }).catch(err => {
           this.childSnak.openSnackBar(`${err.error.error.message.value}`, 'Cerrar','warning-snackbar');
           this.loading = false;
@@ -245,6 +244,7 @@ export class QualityComponent implements OnInit {
       }
     }).catch(err => {
       this.childSnak.openSnackBar(`${err.error.error.message.value}`, 'Cerrar','warning-snackbar');
+      this.loading = false;
     });
   }
 
