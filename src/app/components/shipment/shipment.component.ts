@@ -125,40 +125,51 @@ export class ShipmentComponent implements OnInit {
           }); // return json
           if(session){
             if(response.Data.length > 0) {
-              let documentsCreated = [];
-              documentsCreated.push(await Promise.all(response.Data.map(async (transferShipment) => {
-                let documentsSAP: any;
-                transferShipment.Series = undefined;
-                transferShipment.U_UsrHH = IdUser;
-                const result = await this.shipmentService.createTransfer(transferShipment).toPromise().catch(err => {
-                  this.childSnak.openSnackBar(`Error al generar el traspaso`,'Cerrar','success-snackbar')
-                  this.loading = false;
-                });
-                if(result != null){
-                  if(result.DocEntry){
-                    documentsSAP = new shipmentSAP(result.DocEntry, result.DocNum);
-                    this.updateShipmentEFFEM(transferShipment.StockTransferLines, 'E', result.DocEntry, result.DocNum);
-                  } else {
-                    documentsSAP = new shipmentSAP(-1,-1, result.error.message.value);
-                  }
-                }
-                return documentsSAP;
-              })));
-              
-              //this.childSnak.openSnackBar(`Generados: ${documentsCreated[0].filter(val => val.DocEntry > 0).map(m => m.DocEntry).join(', ')}  NO Generados: ${documentsCreated[0].filter(val => val.DocEntry === -1).map(m => m.Error).join(', ')}`,'Cerrar','blue-snackbar');
-              this.childSnak.openSnackBar(`Generados: ${documentsCreated[0].filter(val => val.DocEntry > 0).map(m => m.DocEntry).join(', ')}`,'Cerrar','success-snackbar')
-              this.onReset();
-              this.loading = false;
+              this.processShipment(response, IdUser);
             } else {
               this.childSnak.openSnackBar(`No hay documentos para integrar`,'Cerrar','warning-snackbar');
               this.loading = false;
             }
           }
+      } else {
+        if(response.Data.length > 0) {
+          this.processShipment(response, IdUser);
+        } else {
+          this.childSnak.openSnackBar(`No hay documentos para integrar`,'Cerrar','warning-snackbar');
+          this.loading = false;
+        }
       }
     } else {
       this.childSnak.openSnackBar(`Se genero un error al momento de construir los documentos`,'Cerrar','warning-snackbar');
       this.loading = false;
     }
+  }
+
+  async processShipment(response: any, IdUser: any) {
+    let documentsCreated = [];
+    documentsCreated.push(await Promise.all(response.Data.map(async (transferShipment) => {
+      let documentsSAP: any;
+      transferShipment.Series = undefined;
+      transferShipment.U_UsrHH = IdUser;
+      const result = await this.shipmentService.createTransfer(transferShipment).toPromise().catch(err => {
+        this.childSnak.openSnackBar(`Error al generar el traspaso`,'Cerrar','success-snackbar')
+        this.loading = false;
+      });
+      if(result != null){
+        if(result.DocEntry){
+          documentsSAP = new shipmentSAP(result.DocEntry, result.DocNum);
+          this.updateShipmentEFFEM(transferShipment.StockTransferLines, 'E', result.DocEntry, result.DocNum);
+        } else {
+          documentsSAP = new shipmentSAP(-1,-1, result.error.message.value);
+        }
+      }
+      return documentsSAP;
+    })));
+    
+    //this.childSnak.openSnackBar(`Generados: ${documentsCreated[0].filter(val => val.DocEntry > 0).map(m => m.DocEntry).join(', ')}  NO Generados: ${documentsCreated[0].filter(val => val.DocEntry === -1).map(m => m.Error).join(', ')}`,'Cerrar','blue-snackbar');
+    this.childSnak.openSnackBar(`Generados: ${documentsCreated[0].filter(val => val.DocEntry > 0).map(m => m.DocEntry).join(', ')}`,'Cerrar','success-snackbar')
+    this.onReset();
+    this.loading = false;
   }
 
   async updateStFolio(status: string, docEntry: number, DocNum: number) {

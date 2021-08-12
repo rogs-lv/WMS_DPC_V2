@@ -85,19 +85,26 @@ export class ManualComponent implements OnInit {
           if(session) {
             response.Data.Series = serie;
             response.Data.U_UsrHH = IdUser;
-            this.transferService.createTransfer(response.Data).subscribe(result => {
-              if(result.DocEntry) {
-                this.childSnak.openSnackBar(`Transferencia generada: ${result.DocNum}`,'Cerrar','success-snackbar');
-                this.loading = false;
-                this.onReset();
-              }
-            }, (err) => {
-              this.childSnak.openSnackBar(`${err.error.error.message.value}`, 'Cerrar','warning-snackbar');
-              this.loading = false;
-            });
+            this.processManual(response);
           }
+      } else {
+        response.Data.Series = serie;
+        response.Data.U_UsrHH = IdUser;
+        this.processManual(response);
       }
     }
+  }
+  processManual(response: any) {
+    this.transferService.createTransfer(response.Data).subscribe(result => {
+      if(result.DocEntry) {
+        this.childSnak.openSnackBar(`Transferencia generada: ${result.DocNum}`,'Cerrar','success-snackbar');
+        this.loading = false;
+        this.onReset();
+      }
+    }, (err) => {
+      this.childSnak.openSnackBar(`${err.error.error.message.value}`, 'Cerrar','warning-snackbar');
+      this.loading = false;
+    });
   }
 
   readCodebars(event) {

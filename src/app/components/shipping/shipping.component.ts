@@ -90,19 +90,25 @@ export class ShippingComponent implements OnInit {
           return;
         }); // return json
         if(session) {
-          this.serviceShipping.createInventoryTransferRequest(document).subscribe(result => {
-            if(result.DocEntry) {
-              this.updateStFolio();
-              this.childSnak.openSnackBar(`Transferencia generada: ${result.DocNum}`,'Cerrar','success-snackbar');
-              this.loading = false;
-              this.onReset();
-            }
-          }, (err) => {
-            this.childSnak.openSnackBar(`${err.error.error.message.value}`, 'Cerrar','warning-snackbar');
-            this.loading = false;
-          });
+          this.processShipping(document);
         }
+    } else {
+      this.processShipping(document);
     }
+  }
+
+  processShipping(document: any) {
+    this.serviceShipping.createInventoryTransferRequest(document).subscribe(result => {
+      if(result.DocEntry) {
+        this.updateStFolio();
+        this.childSnak.openSnackBar(`Transferencia generada: ${result.DocNum}`,'Cerrar','success-snackbar');
+        this.loading = false;
+        this.onReset();
+      }
+    }, (err) => {
+      this.childSnak.openSnackBar(`${err.error.error.message.value}`, 'Cerrar','warning-snackbar');
+      this.loading = false;
+    });
   }
 
   async updateStFolio() {

@@ -66,39 +66,45 @@ export class MoveComponent implements OnInit {
           return;
         }); // return json
         if(session) {
-          let documentLines: transferLine[];
-          documentLines = [];
-          const {IdUser, WhsCode} = this.auth.getDataToken();
-          //Get serie with endpoint Configuration - API Rest
-          const { Data: serie} = await  this.configService.getSerieToDocument(WhsCode).toPromise().catch( err => {
-            this.childSnak.openSnackBar('No ser recupero número de serie', 'Cerrar','warning-snackbar');
-          });
-        
-          for (let i = 0; i < this.rowData.length; i++) {
-            const data = this.rowData[i];
-            const BinFrom =  new binLocation(data.AbsEntry, 2, i, data.Quantity, 0); // From
-            const BinTo = new binLocation(data.NewAbsEntry, 1, i, data.Quantity, 0); // To
-            const Batchs = new batchNumbers(data.DistNumber, data.WhsCode, data.Quantity, i);
-            const Lines = new transferLine(data.ItemCode, data.Quantity, data.WhsCode, data.WhsCode, [Batchs], [BinFrom, BinTo]);  
-            documentLines.push(Lines);
-          }
-          const date = new Date();
-          const dateDocument = `${date.getFullYear()}-${("0" + (date.getMonth() + 1)).slice(-2)}-${("0" + date.getDate()).slice(-2)}`;
-          const hourDocument = `${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}`;
-          const _transfer = new transfer(dateDocument, this.rowData[0].WhsCode,this.rowData[0].WhsCode, 'HH', IdUser, documentLines, dateDocument, hourDocument, serie, '');
-      
-          this.transferService.createTransfer(_transfer).subscribe(result => {
-            if(result.DocEntry) {
-              this.childSnak.openSnackBar(`Transferencia generada: ${result.DocEntry}`,'Cerrar','success-snackbar');
-              this.loading = false;
-              this.onReset();
-            }
-          }, (err) => {
-            this.childSnak.openSnackBar(`${err.error.error.message.value}`, 'Cerrar','warning-snackbar');
-            this.loading = false;
-          });
+          await this.processMove();
         }
+    } else {
+      await this.processMove();
     }
+  }
+
+  async processMove() {
+    let documentLines: transferLine[];
+    documentLines = [];
+    const {IdUser, WhsCode} = this.auth.getDataToken();
+    //Get serie with endpoint Configuration - API Rest
+    const { Data: serie} = await  this.configService.getSerieToDocument(WhsCode).toPromise().catch( err => {
+      this.childSnak.openSnackBar('No ser recupero número de serie', 'Cerrar','warning-snackbar');
+    });
+  
+    for (let i = 0; i < this.rowData.length; i++) {
+      const data = this.rowData[i];
+      const BinFrom =  new binLocation(data.AbsEntry, 2, i, data.Quantity, 0); // From
+      const BinTo = new binLocation(data.NewAbsEntry, 1, i, data.Quantity, 0); // To
+      const Batchs = new batchNumbers(data.DistNumber, data.WhsCode, data.Quantity, i);
+      const Lines = new transferLine(data.ItemCode, data.Quantity, data.WhsCode, data.WhsCode, [Batchs], [BinFrom, BinTo]);  
+      documentLines.push(Lines);
+    }
+    const date = new Date();
+    const dateDocument = `${date.getFullYear()}-${("0" + (date.getMonth() + 1)).slice(-2)}-${("0" + date.getDate()).slice(-2)}`;
+    const hourDocument = `${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}`;
+    const _transfer = new transfer(dateDocument, this.rowData[0].WhsCode,this.rowData[0].WhsCode, 'HH', IdUser, documentLines, dateDocument, hourDocument, serie, '');
+
+    this.transferService.createTransfer(_transfer).subscribe(result => {
+      if(result.DocEntry) {
+        this.childSnak.openSnackBar(`Transferencia generada: ${result.DocEntry}`,'Cerrar','success-snackbar');
+        this.loading = false;
+        this.onReset();
+      }
+    }, (err) => {
+      this.childSnak.openSnackBar(`${err.error.error.message.value}`, 'Cerrar','warning-snackbar');
+      this.loading = false;
+    });
   }
 
   onGridReady(params) {

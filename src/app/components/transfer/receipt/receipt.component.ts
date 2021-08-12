@@ -5,6 +5,7 @@ import { ServiceLayer } from 'src/app/service/shared/ServicesLayer.service';
 import { TransferService } from 'src/app/service/transfer/transfer.service';
 import { SnakbarComponent } from '../../shared/snakbar/snakbar.component';
 import { DataReceipt, DocumentTransferReceipt } from '../../../models/transfer';
+import { response } from '../../../interfaces/response.interface';
 
 @Component({
   selector: 'app-receipt',
@@ -82,19 +83,27 @@ export class ReceiptComponent implements OnInit {
           if(session){
             response.Data.Series = serie;
             response.Data.U_UsrHH = IdUser;
-            this.transferService.createTransfer(response.Data).subscribe(result => {
-              if(result.DocEntry) {
-                this.childSnak.openSnackBar(`Transferencia generada: ${result.DocNum}`,'Cerrar','success-snackbar');
-                this.loading = false;
-                this.onReset();
-              }
-            }, (err) => {
-              this.childSnak.openSnackBar(`${err.error.error.message.value}`, 'Cerrar','warning-snackbar');
-              this.loading = false;
-            });
+            this.processReceipt(response);
           }
+      } else {
+        response.Data.Series = serie;
+        response.Data.U_UsrHH = IdUser;
+        this.processReceipt(response);
       }
     }
+  }
+
+  processReceipt(response: any) {
+    this.transferService.createTransfer(response.Data).subscribe(result => {
+      if(result.DocEntry) {
+        this.childSnak.openSnackBar(`Transferencia generada: ${result.DocNum}`,'Cerrar','success-snackbar');
+        this.loading = false;
+        this.onReset();
+      }
+    }, (err) => {
+      this.childSnak.openSnackBar(`${err.error.error.message.value}`, 'Cerrar','warning-snackbar');
+      this.loading = false;
+    });
   }
 
   readCodebars(event) {

@@ -7,6 +7,7 @@ import { SnakbarComponent } from '../../shared/snakbar/snakbar.component';
 import { batchNumbers, binLocation, DataMovement, DocumentTransfer, transfer, transferLine } from '../../../models/transfer';
 import { MatDialog } from '@angular/material';
 import { OpenRequestComponent } from '../dialog/open-request/open-request.component';
+import { response } from '../../../interfaces/response.interface';
 
 @Component({
   selector: 'app-request',
@@ -93,19 +94,27 @@ export class RequestComponent implements OnInit {
           if(session){
             response.Data.Series = serie;
             response.Data.U_UsrHH = IdUser;
-            this.transferService.createTransfer(response.Data).subscribe(result => {
-              if(result.DocEntry) {
-                this.childSnak.openSnackBar(`Transferencia generada: ${result.DocNum}`,'Cerrar','success-snackbar');
-                this.loading = false;
-                this.onReset();
-              }
-            }, (err) => {
-              this.childSnak.openSnackBar(`${err.error.error.message.value}`, 'Cerrar','warning-snackbar');
-              this.loading = false;
-            });
+            this.processRequest(response);
           }
       }
+    } else {
+      response.Data.Series = serie;
+      response.Data.U_UsrHH = IdUser;
+      this.processRequest(response);
     }
+  }
+
+  processRequest(response: any){
+    this.transferService.createTransfer(response.Data).subscribe(result => {
+      if(result.DocEntry) {
+        this.childSnak.openSnackBar(`Transferencia generada: ${result.DocNum}`,'Cerrar','success-snackbar');
+        this.loading = false;
+        this.onReset();
+      }
+    }, (err) => {
+      this.childSnak.openSnackBar(`${err.error.error.message.value}`, 'Cerrar','warning-snackbar');
+      this.loading = false;
+    });
   }
 
   getLineItem(itemCode: string): number {
