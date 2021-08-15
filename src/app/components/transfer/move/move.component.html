@@ -6,16 +6,16 @@
         <mat-card-content>
             <form #formTransfer="ngForm" novalidate>
                 <div class="row">
-                    <div class="col-lg-7 col-md-7 col-sm-8 col-8 pr-0">
+                    <div class="col-lg-4 col-md-4 col-sm-8 col-8 pr-0">
                         <div class="input-group mb-3">
                             <input type="text" class="form-control" placeholder="Ubicación" #FieldBinCode="ngModel" name="FieldBinCode" [(ngModel)]="fielfBincode">
                             <div class="input-group-append">
-                                <button type="button" class="btn btn-primary" (click)="onClickViewLocation()" [disabled]="!fielfBincode">Ver ubicación</button>
+                                <button type="button" class="btn btn-primary" (click)="onClickViewLocation()" [disabled]="!fielfBincode"><span><i class="far fa-eye" aria-hidden="true"></i></span></button>
                             </div>
                           </div>
                     </div>
                     <div class="col-lg-5 col-md-5 col-sm-4 col-4 pr-0">
-                        <button type="button" class="btn btn-primary" (click)="onClickSuggestedLocation()">Ub. Sugerida</button>
+                        <button type="button" class="btn btn-primary" (click)="onClickSuggestedLocation()"><span><i class="fas fa-map-marked-alt" aria-hidden="true"></i></span></button>
                     </div>
                 </div>
                 <div class="row">

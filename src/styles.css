@@ -22,6 +22,10 @@ html, body { height: 100%; }
 mat-card-content {
     font-size: 18px !important;
 }
+
+.example-card {
+    padding: 8px !important;
+}
 table {
     width: 100%;
   }

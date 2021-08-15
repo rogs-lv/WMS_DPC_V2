@@ -16,7 +16,7 @@
           <mat-nav-list >
             <div *ngFor="let mod of modules" >
               <div *ngIf="mod.Principal === '' && mod.Path !== ''">
-                <a mat-list-item (click)="onChangeTittle(mod.Title)" [routerLink]="[mod.Path]"><mat-icon>{{mod.Icon}}</mat-icon><span>{{mod.Title}}</span></a>      
+                <a mat-list-item (click)="onChangeTittle(mod.Title); sidenav.toggle()" [routerLink]="[mod.Path]"><mat-icon>{{mod.Icon}}</mat-icon><span>{{mod.Title}}</span></a>      
               </div> 
               <div *ngIf="mod.Path === ''">
                 <mat-expansion-panel [class.mat-elevation-z0]="true" dense>
@@ -25,7 +25,7 @@
                     <span class="pdgSubmenu">{{mod.Title}}</span>
                   </mat-expansion-panel-header>
                   <mat-nav-list dense>
-                      <a *ngFor="let item of modules | filterSubmodule: 'TRAN'" (click)="onChangeTittle(item.Title)" mat-list-item [routerLink]="[item.Path]">{{item.Title}}</a>
+                      <a *ngFor="let item of modules | filterSubmodule: 'TRAN'" (click)="onChangeTittle(item.Title); sidenav.toggle()" mat-list-item [routerLink]="[item.Path]">{{item.Title}}</a>
                   </mat-nav-list>
                 </mat-expansion-panel>
               </div> 
