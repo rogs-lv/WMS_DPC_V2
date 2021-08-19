@@ -36,7 +36,7 @@
                                     <a>{{p.FirstName}} {{p.LastName}}</a>
                                 </td> -->
                                 <td>                                            
-                                    <a>{{p.WhsCode}}</a>
+                                    <a>{{p.WhsCode | replace:';':',' | truncate : 12}}</a>
                                 </td>
                                 <td class="text-center">
                                     <span class="badge badge-success" *ngIf="p.Status">Activo</span>

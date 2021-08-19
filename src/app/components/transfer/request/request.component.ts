@@ -51,6 +51,7 @@ export class RequestComponent implements OnInit {
   }
 
   ngOnInit() {
+    localStorage.setItem('lastOnePage', window.location.pathname);
   }
   async onSubmit() {
     this.gridApi.forEachNode(node => {

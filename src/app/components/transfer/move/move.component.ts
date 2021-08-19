@@ -48,6 +48,7 @@ export class MoveComponent implements OnInit {
   ) { }
 
   ngOnInit() {
+    localStorage.setItem('lastOnePage', window.location.pathname);
   }
   async onSubmit() {
     const UbEmpty = this.rowData.findIndex(val => !val.NewAbsEntry || !val.NewBinCode);

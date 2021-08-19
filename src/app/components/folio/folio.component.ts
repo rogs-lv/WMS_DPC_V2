@@ -40,6 +40,7 @@ export class FolioComponent implements OnInit {
   }
 
   ngOnInit() {
+    localStorage.setItem('lastOnePage', window.location.pathname);
   }
 
   onGridReady(params) {

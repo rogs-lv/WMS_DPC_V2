@@ -24,6 +24,7 @@ export class ListprofileComponent implements OnInit {
 
   ngOnInit() {
     this.getListProfiles();
+    localStorage.setItem('lastOnePage', window.location.pathname);
   }
   
   getListProfiles() {

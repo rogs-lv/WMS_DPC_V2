@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
-import { CanActivate, ActivatedRouteSnapshot, RouterStateSnapshot, UrlTree, Router } from '@angular/router';
-import { Observable } from 'rxjs';
+import { CanActivate, ActivatedRouteSnapshot, RouterStateSnapshot, UrlTree, Router, CanDeactivate } from '@angular/router';
+import { Observable, Subject } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
 import { HOME_ROUTES } from '../components/home/home.routes';
 import { AuthService } from '../service/authentication/auth.service';
@@ -11,7 +11,8 @@ import { AuthService } from '../service/authentication/auth.service';
 export class AuthHomeGuard implements CanActivate {
   constructor(
     private authService: AuthService,
-    private _router:Router  
+    private _router:Router,
+    
   ){}
 
   canActivate(
@@ -21,7 +22,6 @@ export class AuthHomeGuard implements CanActivate {
           // Si la petición es exitosa se puede proceder
           map(result => {
             if(result !== null){
-              
               if(result.IdModule === "" && result.Path === "pagenotfound") {
                 alert(`No tiene acceso a la url solicitada`);
                 this._router.navigateByUrl('/home');
@@ -35,4 +35,5 @@ export class AuthHomeGuard implements CanActivate {
           })
       );
   }
+  
 }

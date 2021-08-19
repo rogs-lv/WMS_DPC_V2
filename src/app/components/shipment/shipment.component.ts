@@ -55,6 +55,7 @@ export class ShipmentComponent implements OnInit {
 
   ngOnInit() {
     this.getListPartners();
+    localStorage.setItem('lastOnePage', window.location.pathname);
   }
 
   onGridReady(params) {

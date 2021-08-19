@@ -59,7 +59,8 @@ export class InventoryComponent implements OnInit {
   ngOnInit() {
     this.inventoryField.numRecount = 1;
     this.countNumbers();
-    this.warehouses();    
+    this.warehouses();
+    localStorage.setItem('lastOnePage', window.location.pathname);
   }
   
   async onSubmit(){

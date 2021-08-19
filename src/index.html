@@ -12,5 +12,12 @@
 <body>
   <app-root></app-root>
   <script src="./config.js"></script>
+  <script type = "text/javascript" >
+    history.pushState(null, null, localStorage.getItem('lastOnePage'));
+    window.addEventListener('popstate', function(event) {
+      //history.pushState(null, null, '/home/quality');
+      history.pushState(null, null, localStorage.getItem('lastOnePage'));
+    });
+    </script>
 </body>
 </html>

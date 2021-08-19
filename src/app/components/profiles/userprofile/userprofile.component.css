@@ -16,3 +16,18 @@
 .spanColor {
     color: red;
 }
+
+::ng-deep .mat-form-field-infix {
+    padding: 0.5em 0em !important;
+    border-top: 0.5em solid transparent !important;
+}
+::ng-deep .mat-form-field-appearance-outline .mat-form-field-wrapper {
+    margin: 0em 0em !important;
+}
+::ng-deep .mat-form-field-wrapper {
+    padding-bottom: 0em !important;
+}
+/* 
+::ng-deep .mat-form-field-underline {
+    display: none;
+  } */

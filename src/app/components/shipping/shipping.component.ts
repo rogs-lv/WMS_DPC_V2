@@ -47,6 +47,7 @@ export class ShippingComponent implements OnInit {
 
   ngOnInit() {
     this.getListPartners();
+    localStorage.setItem('lastOnePage', window.location.pathname);
   }
 
   async onSubmit() {

@@ -49,6 +49,7 @@ export class ManualComponent implements OnInit {
 
   ngOnInit() {
     this.getListWarehouse();
+    localStorage.setItem('lastOnePage', window.location.pathname);
   }
   
   onGridReady(params) {

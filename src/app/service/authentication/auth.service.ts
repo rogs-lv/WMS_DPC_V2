@@ -58,6 +58,7 @@ export class AuthService {
 
   doLogout() {
     localStorage.removeItem('access_token');
+    localStorage.removeItem('lastOnePage');
   }
 
   // User profile

@@ -43,6 +43,7 @@ export class AdslComponent implements OnInit {
 
   ngOnInit() {
     this.getListPartners();
+    localStorage.setItem('lastOnePage', window.location.pathname);
   }
 
   onGridReady(params) {

@@ -9,6 +9,8 @@ import { Router } from '@angular/router';
 import { ComunicationService } from 'src/app/service/shared/comunication.service';
 import { NgForm } from '@angular/forms';
 import { warehouse } from 'src/app/models/warehouse';
+import { MatOption, MatSelect } from '@angular/material';
+
 @Component({
   selector: 'app-userprofile',
   templateUrl: './userprofile.component.html',
@@ -16,6 +18,9 @@ import { warehouse } from 'src/app/models/warehouse';
 })
 export class UserprofileComponent implements OnInit {
   @ViewChild(SnakbarComponent, {static: true}) childSnak: SnakbarComponent;
+  @ViewChild('select', {static: true}) select: MatSelect;
+
+  allSelected=false;
   profileUser: profile;
   modules: module[];
   sub_module: submodule[];
@@ -39,6 +44,7 @@ export class UserprofileComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.getWarehouse();
     this.profileUser = new profile();
     this.sharedService.sharedIdProfileObservable.subscribe(profile => {
       if(profile !== null){
@@ -53,11 +59,45 @@ export class UserprofileComponent implements OnInit {
         this.getAdditionalSettings('N');
       }
     });
-    this.getWarehouse();
+    localStorage.setItem('lastOnePage', window.location.pathname);
   }
   onClickProfile(formProfile: NgForm) {
 
   }
+
+ toggleAllSelection() {
+    if (this.allSelected) {
+      this.select.options.forEach((item: MatOption) => item.select());
+    } else {
+      this.select.options.forEach((item: MatOption) => item.deselect());
+    }
+    this.profileUser.WhsCode = this.buildWarehouse();
+  }
+  
+  optionClick() {
+    let newStatus = true;
+    this.select.options.forEach((item: MatOption) => {
+      if (!item.selected) {
+        newStatus = false;
+      }
+    });
+    this.allSelected = newStatus;
+    this.profileUser.WhsCode = this.buildWarehouse();
+  }
+
+  selectWarehousesProfile(){
+    if(this.action === "U") {
+      const arrayWarehose= this.profileUser.WhsCode.split(';');
+      arrayWarehose.forEach((whs: string) => {
+        this.select.options.forEach((item: MatOption) => {
+          if(whs === item.value) {
+            item.select();
+          }
+        });
+      });
+    }
+  }
+
   getModulesProfile(idProfile) {
     this.profileService.getModulesProfile(idProfile).subscribe(response => {
       if(response.Code === 0) {
@@ -85,11 +125,27 @@ export class UserprofileComponent implements OnInit {
       this.childSnak.openSnackBar(err.message, 'Cerrar', 'error-snackbar')
     })
   }
+
+  buildWarehouse(){
+    let warehouseSelected = '';
+    this.select.options.forEach((item: MatOption) => {
+      if (item.selected) {
+        if(warehouseSelected.length === 0) {
+          warehouseSelected += `${item.value}`;
+        } else {
+          warehouseSelected += `;${item.value}`;
+        }
+      }
+    });
+    return warehouseSelected;
+  }
   buildDataUser(): profileUser { 
     const data: profileUser = new profileUser();
     data.UserProfile = this.profileUser;
     data.UserAdditionalSettings = this.additionalSett;
     data.UserModules = this.modules;
+
+    data.UserProfile.WhsCode = this.buildWarehouse();
     return data;
   }
   onCreateUser() {
@@ -149,5 +205,8 @@ export class UserprofileComponent implements OnInit {
     filterModuleTran.map(x=> x.Status = true);
     filterModulePrincipal.map(x=> x.Status = true);
     this.additionalSett.map(y => y.Status = true);
+    this.profileUser.WhsCode = '';
+    this.select.options.forEach((data: MatOption) => data.deselect());
+    this.allSelected = false;
   }
 }

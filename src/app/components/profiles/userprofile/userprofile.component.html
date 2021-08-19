@@ -23,7 +23,7 @@
             <div class="col-lg-3 col-md-3 col-sm-12 col-12 d-flex align-items-center">
                 <div class="custom-control custom-checkbox">
                     <input type="checkbox" class="custom-control-input" id="status" #Status="ngModel" name="Status" [(ngModel)]="profileUser.Status">
-                    <label class="custom-control-label" for="status">Estatus</label>
+                    <label class="custom-control-label" for="status">Activo</label>
                 </div>
             </div>
         </div>
@@ -31,10 +31,21 @@
             <div class="col-lg-3 col-md-3 col-sm-12 col-12">
                 <div class="form-group">
                     <label for="warehouse">Almacén<span class="spanColor" *ngIf="action === 'I' || action === 'U'">*</span></label>
+                    <mat-form-field appearance="outline" (click)="selectWarehousesProfile()">
+                        <mat-select #select multiple>
+                          <div class="select-all">
+                            <mat-checkbox [(ngModel)]="allSelected"
+                                            [ngModelOptions]="{standalone: true}"
+                                            (change)="toggleAllSelection()">Select All</mat-checkbox>
+                          </div>
+                          <mat-option *ngFor="let whs of warehouses" [value]="whs.WhsCode" (click)="optionClick()">{{whs.WhsName}}</mat-option>
+                        </mat-select>
+                      </mat-form-field>
+                    <!-- 
                     <select class="form-control" id="warehouse" required #Warehouse="ngModel" name="Warehouse" [(ngModel)]="profileUser.WhsCode">
                         <option *ngFor="let whs of warehouses" [ngValue]="whs.WhsCode">{{whs.WhsName}}</option>
                     </select>
-                    <span class="text-danger" *ngIf="(formProfile.submitted  || formProfile.controls['warehouse']?.touched ) && formProfile.controls['warehouse'].errors"><i class="fas fa-user-circle"></i> El almacén es obligatorio</span>
+                    <span class="text-danger" *ngIf="(formProfile.submitted  || formProfile.controls['warehouse']?.touched ) && formProfile.controls['warehouse'].errors"><i class="fas fa-user-circle"></i> El almacén es obligatorio</span> -->
                 </div>
             </div>
             <div class="col-lg-5 col-md-5 col-sm-12 col-12">

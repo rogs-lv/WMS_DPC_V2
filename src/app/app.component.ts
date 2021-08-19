@@ -1,5 +1,4 @@
-import { Component, HostListener } from '@angular/core';
-
+import { Component, HostListener, Injectable } from '@angular/core';
 
 @Component({
   selector: 'app-root',

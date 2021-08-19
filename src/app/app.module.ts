@@ -38,6 +38,10 @@ import { SuggestedComponent } from './components/transfer/dialog/suggested/sugge
 import { OpenRequestComponent } from './components/transfer/dialog/open-request/open-request.component';
 import { MultibatchComponent } from './components/transfer/dialog/multibatch/multibatch.component';
 import { AdslComponent } from './components/adsl/adsl.component';
+import { ReplacePipe } from './pipes/replace.pipe';
+import { TruncatePipe } from './pipes/truncate.pipe';
+//import { CanNavigateService } from './service/configuration/navigation.service';
+
 @NgModule({
   declarations: [
     AppComponent,
@@ -69,7 +73,9 @@ import { AdslComponent } from './components/adsl/adsl.component';
     SuggestedComponent,
     OpenRequestComponent,
     MultibatchComponent,
-    AdslComponent
+    AdslComponent,
+    ReplacePipe,
+    TruncatePipe
   ],
   imports: [
     BrowserModule,
@@ -82,7 +88,8 @@ import { AdslComponent } from './components/adsl/adsl.component';
     AgGridModule.withComponents([])
   ],
   entryComponents: [FolioComponent, DialogConfirmComponent, InventoryComponent, LocationBatchComponent, ChangeWhsComponent, DialogLocationComponent, MoveComponent, SuggestedComponent, RequestComponent, OpenRequestComponent, ManualComponent, MultibatchComponent],
-  providers: [],
+  //providers: [CanNavigateService],
+  providers:[],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

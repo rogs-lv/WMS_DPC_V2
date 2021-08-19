@@ -6,6 +6,7 @@ import { ConfigurationService } from 'src/app/service/configuration/configuratio
 import { SnakbarComponent } from '../shared/snakbar/snakbar.component';
 import { moduleHome } from 'src/app/models/module';
 import { ServiceLayer } from 'src/app/service/shared/ServicesLayer.service';
+//import { CanNavigateService } from 'src/app/service/configuration/navigation.service';
 @Component({
   selector: 'app-home',
   templateUrl: './home.component.html',
@@ -24,8 +25,16 @@ export class HomeComponent implements OnInit {
     private auth: AuthService,
     private sapSL: ServiceLayer,
     private config: ConfigurationService,
-    private router: Router
+    private router: Router,
+    //private _navigateService: CanNavigateService
   ) { 
+    /* _navigateService.navigationAttempt.subscribe(wasPermitted => {
+        //If navigation was prevented then just go to first tab
+        if (!wasPermitted){
+           console.log('>>',wasPermitted)
+        }
+        console.log('>',wasPermitted)
+    }) */
   }
 
   ngOnInit() {
@@ -42,6 +51,7 @@ export class HomeComponent implements OnInit {
   }
   onChangeTittle(value: string) {
     this.titleModule = value;
+    //this._navigateService.updatePermission(true);
   }
   
   getConfigMenu() {

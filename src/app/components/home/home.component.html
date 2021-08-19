@@ -9,7 +9,7 @@
         </div>
         <div class="pl-3 mt-4">
             <p class="title fg-white">{{dataUser.idUser}}</p>
-            <p class="subtitle fg-white">{{dataUser.whsCode}}</p>
+            <p class="subtitle fg-white">{{dataUser.whsCode | replace: ';':',' | truncate : 20 }}</p>
         </div>
       </div>
         <div class="mt-3">
