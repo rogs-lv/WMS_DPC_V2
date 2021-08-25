@@ -1,9 +1,10 @@
 import { Injectable } from '@angular/core';
 import { CanActivate, ActivatedRouteSnapshot, RouterStateSnapshot, UrlTree, Router, CanDeactivate } from '@angular/router';
-import { Observable, Subject } from 'rxjs';
+import { of, Observable, Subject } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
 import { HOME_ROUTES } from '../components/home/home.routes';
 import { AuthService } from '../service/authentication/auth.service';
+import { ServiceLayer } from '../service/shared/ServicesLayer.service';
 
 @Injectable({
   providedIn: 'root'
@@ -11,6 +12,7 @@ import { AuthService } from '../service/authentication/auth.service';
 export class AuthHomeGuard implements CanActivate {
   constructor(
     private authService: AuthService,
+    private authSL: ServiceLayer,
     private _router:Router,
     
   ){}
@@ -32,6 +34,12 @@ export class AuthHomeGuard implements CanActivate {
             else{
               return false;
             }
+          }), catchError((err)=>{
+            alert(`No tiene acceso a la url solicitada`);
+            this.authService.doLogout();
+            this.authSL.doLogoutSL();
+            this._router.navigateByUrl('/home');
+            return  of(false);
           })
       );
   }

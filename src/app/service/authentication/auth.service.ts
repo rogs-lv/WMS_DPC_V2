@@ -90,6 +90,7 @@ export class AuthService {
     const header = new HttpHeaders()
         .set('Authorization', this.getToken());
     const api = `${this.endpoint}Configuration/GetVerifypath?userId=${this.getDataToken().IdUser}&path=${path}`;
+    
     return this.http.get(api, { headers: header }).pipe(
       map( (response: any) => {
           return response.Data;
